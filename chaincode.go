@@ -109,11 +109,11 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 	intArgs1, err := strconv.Atoi(args[1])
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
-	err = stub.PutState(args[0], int32TobyteArray(int32(intArgs1+intValueTemp)))
+	err = stub.PutState(args[0], []byte(strconv.Itoa(intArgs1+intValueTemp)))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	return "Add is success!" + "Account: " + args[0] + "Remaining balance is:" + string(int32TobyteArray(int32(intArgs1+intValueTemp))), nil
+	return "Add is success!" + "Account: " + args[0] + "Remaining balance is:" + strconv.Itoa(intArgs1+intValueTemp), nil
 }
 
 // args[0] represents account, args[1] represents money.
@@ -131,11 +131,11 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if intArgs1 > intValueTemp {
 		return "", fmt.Errorf("The balance in %s's account is not enough to reduce!", args[0])
 	}
-	err = stub.PutState(args[0], int32TobyteArray(int32(intValueTemp-intArgs1)))
+	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTemp-intArgs1)))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	return "Reduce is success!" + "Account: " + args[0] + " Remaining balance is:" + string(int32TobyteArray(int32(intArgs1-intValueTemp))), nil
+	return "Reduce is success!" + "Account: " + args[0] + " Remaining balance is:" + strconv.Itoa(intArgs1+intValueTemp), nil
 }
 
 // create an account of ledger, args[0] means the account ID, args[1] means the account initial value.
@@ -168,18 +168,6 @@ func delete(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return "Delete" + args[0] + "is success!", nil
 }
 
-// it is used to convert an int32 variable into a byte array.
-func int32TobyteArray(core int32) []byte {
-	var result []byte = make([]byte, 4)
-
-	result[3] = uint8(core)
-	result[2] = uint8(core >> 8)
-	result[1] = uint8(core >> 16)
-	result[0] = uint8(core >> 24)
-
-	return result
-}
-
 // args[0] represents the debit account, args[1] represents the credit account, args[2] represents the money.
 // transfer the money from the debit account to the credit account.
 func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
@@ -198,7 +186,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("The balance in %s's account is not enough to reduce!", args[0])
 	}
 	//Then we really reduce the balance from the debit account and put it into the credit account.
-	err = stub.PutState(args[0], int32TobyteArray(int32(intValueTempD-intArgs2)))
+	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTempD-intArgs2)))
 	//get the remaining balance from the cebit account.
 	valueTempC, err := stub.GetState(args[0])
 	if err != nil {
@@ -206,7 +194,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 	intValueTempC, err := strconv.Atoi(string(valueTempC))
 	// add the money to the credit account.
-	err = stub.PutState(args[0], int32TobyteArray(int32(intArgs2+intValueTempC)))
+	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTempC+intArgs2)))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
