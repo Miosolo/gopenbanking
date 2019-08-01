@@ -12,18 +12,20 @@ import (
 type SimpleAsset struct {
 }
 
-// Init is called during chaincode instantiation to initialize any
-// data. Note that chaincode upgrade also calls this function to reset
-// or to migrate data.
+// Init is called during chaincode instantiation to initialize any data.
+// Note that chaincode upgrade also calls this function to reset or to migrate data.
+// When calls function Init, you can set an original account and its value.
 func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	// Get the args from the transaction proposal
-	args := stub.GetStringArgs()
+	function, args := stub.GetFunctionAndParameters()
+	if function != "init" {
+		return shim.Error("The first parameter needs to be a string: \"init\"")
+	}
 	if len(args) != 2 {
-		return shim.Error("Incorrect arguments. Expecting a key and a value")
+		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
 
 	// Set up any variables or assets here by calling stub.PutState()
-
 	// We store the key and the value on the ledger
 	err := stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
@@ -75,7 +77,7 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	return "Account:" + args[0] + "Balance: " + string(value), nil
+	return "Account:" + args[0] + "Balance: " + args[1], nil
 }
 
 // Get returns the value of the specified asset key
