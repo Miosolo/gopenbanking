@@ -170,7 +170,7 @@ func delete(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 // it is used to convert an int32 variable into a byte array.
 func int32TobyteArray(core int32) []byte {
-	var result []byte
+	var result []byte = make([]byte, 4)
 
 	result[3] = uint8(core)
 	result[2] = uint8(core >> 8)
