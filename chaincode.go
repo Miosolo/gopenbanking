@@ -72,8 +72,12 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
 	}
+	account, err := stub.GetState(args[0])
+	if account == nil {
+		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+	}
 	// set the account and its balance value to specific values.
-	err := stub.PutState(args[0], []byte(args[1]))
+	err = stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
