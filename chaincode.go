@@ -1,11 +1,26 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
+
+	"github.com/op/go-logging"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+)
+
+// return an log object.
+var log = logging.MustGetLogger("CHAINCODE")
+
+// Everything except the message has a custom color
+// which is dependent on the log level. Many fields have a custom output
+// formatting too, eg. the time returns the hour down to the milli second.
+var format = logging.MustStringFormatter(
+	`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
 )
 
 // SimpleAsset implements a simple chaincode to manage an asset
@@ -19,9 +34,11 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	// Get the args from the transaction proposal
 	function, args := stub.GetFunctionAndParameters()
 	if function != "init" {
+		log.Error("The first parameter needs to be a string: \"init\"")
 		return shim.Error("The first parameter needs to be a string: \"init\"")
 	}
 	if len(args) != 2 {
+		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
 
@@ -43,9 +60,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 	var result string
 	var err error
-	if fn == "set" {
-		result, err = set(stub, args)
-	} else if fn == "get" { // assume 'get' even if fn is nil
+	if fn == "get" { // assume 'get' even if fn is nil
 		result, err = get(stub, args)
 	} else if fn == "add" {
 		result, err = add(stub, args)
@@ -57,31 +72,16 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		result, err = delete(stub, args)
 	} else if fn == "transfer" {
 		result, err = transfer(stub, args)
+	} else if fn == "query" {
+		result, err = query(stub, args)
 	}
 	if err != nil {
+		log.Error(err.Error())
 		return shim.Error(err.Error())
 	}
 
 	// Return the result as success payload
 	return shim.Success([]byte(result))
-}
-
-// Set stores the asset (both key and value) on the ledger. If the key exists,
-// it will override the value with the new one
-func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 2 {
-		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
-	}
-	account, err := stub.GetState(args[0])
-	if account == nil {
-		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
-	}
-	// set the account and its balance value to specific values.
-	err = stub.PutState(args[0], []byte(args[1]))
-	if err != nil {
-		return "", fmt.Errorf("Failed to set asset: %s", args[0])
-	}
-	return "Account:" + args[0] + "Balance: " + args[1], nil
 }
 
 // Get returns the value of the specified asset key
@@ -98,7 +98,9 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if value == nil {
 		return "", fmt.Errorf("Asset not found: %s", args[0])
 	}
-	return "Account:" + args[0] + "Balance: " + string(value), nil
+
+	//set the output string's color to be green.
+	return fmt.Sprintf(" Account: %s; Balance: %s", args[0], string(value)), nil
 }
 
 // args[0] represents account, args[1] represents money.
@@ -107,17 +109,28 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
 	}
+
 	valueTemp, err := stub.GetState(args[0])
 	if err != nil {
 		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
 	}
+
 	intArgs1, err := strconv.Atoi(args[1])
+	if err != nil {
+		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
+	}
+
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
+	if err != nil {
+		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
+	}
+
 	err = stub.PutState(args[0], []byte(strconv.Itoa(intArgs1+intValueTemp)))
 	if err != nil {
-		return "", fmt.Errorf("Failed to set asset: %s", args[0])
+		return "", fmt.Errorf("Failed to set asset: %s with error: %s", args[0], err)
 	}
-	return "Add is success!" + "Account: " + args[0] + "Remaining balance is:" + strconv.Itoa(intArgs1+intValueTemp), nil
+
+	return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intArgs1+intValueTemp), nil
 }
 
 // args[0] represents account, args[1] represents money.
@@ -126,25 +139,36 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
 	}
+
 	valueTemp, err := stub.GetState(args[0])
 	if err != nil {
 		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
 	}
+
 	intArgs1, err := strconv.Atoi(args[1])
+	if err != nil {
+		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
+	}
+
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
+	if err != nil {
+		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
+	}
+
 	if intArgs1 > intValueTemp {
 		return "", fmt.Errorf("The balance in %s's account is not enough to reduce!", args[0])
 	}
+
 	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTemp-intArgs1)))
 	if err != nil {
-		return "", fmt.Errorf("Failed to set asset: %s", args[0])
+		return "", fmt.Errorf("Failed to set asset: %s;  With Error: %s", args[0], err)
 	}
-	return "Reduce is success!" + "Account: " + args[0] + " Remaining balance is:" + strconv.Itoa(intArgs1+intValueTemp), nil
+
+	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intArgs1+intValueTemp), nil
 }
 
 // create an account of ledger, args[0] means the account ID, args[1] means the account initial value.
 func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an unique account name and an initial balance value.")
 	}
@@ -153,9 +177,10 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	// We store the key and the value on the ledger
 	err := stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s", args[0]))
+		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
-	return "Create account: " + args[0] + "is success!", nil
+
+	return fmt.Sprintf("Create account: %s is success!", args[0]), nil
 }
 
 // delete an account of ledger. args[0] represents the account ID.
@@ -178,35 +203,82 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 3 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a debit account, a credit account and a value")
 	}
-	//get the remaining balance from the debit account.
-	valueTempD, err := stub.GetState(args[0])
+
+	//reduce money from the debit account.
+	var argsD []string = make([]string, 2)
+	argsD[0] = args[0]
+	args[1] = args[2]
+	reduce(stub, argsD)
+
+	//add money to the cebit account.
+	var argsC []string = make([]string, 2)
+	argsC[0] = args[1]
+	argsC[1] = args[2]
+	add(stub, argsC)
+
+	return fmt.Sprintf("Transfer is success!"), nil
+}
+
+// query for the history
+func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	// Get the iterator for query.
+	it, err := stub.GetHistoryForKey(args[0])
 	if err != nil {
-		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+		return "", fmt.Errorf("GetHistoryForKey Failed! With Error: %s", err)
 	}
-	intValueTempD, err := strconv.Atoi(string(valueTempD))
-	// convert the money into an integer variable.
-	intArgs2, err := strconv.Atoi(args[2])
-	if intValueTempD < intArgs2 {
-		return "", fmt.Errorf("The balance in %s's account is not enough to reduce!", args[0])
-	}
-	//Then we really reduce the balance from the debit account and put it into the credit account.
-	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTempD-intArgs2)))
-	//get the remaining balance from the cebit account.
-	valueTempC, err := stub.GetState(args[0])
+
+	result, err := GetHistoryListResult(it)
 	if err != nil {
-		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+		return "", fmt.Errorf(fmt.Sprintf("List Result Failed! Error: %s", err))
 	}
-	intValueTempC, err := strconv.Atoi(string(valueTempC))
-	// add the money to the credit account.
-	err = stub.PutState(args[0], []byte(strconv.Itoa(intValueTempC+intArgs2)))
-	if err != nil {
-		return "", fmt.Errorf("Failed to set asset: %s", args[0])
+
+	fmt.Printf("queryResult:\n%s\n", result)
+	return fmt.Sprintf("Query success!"), nil
+}
+
+// extract results from the iterator
+func GetHistoryListResult(iterator shim.HistoryQueryIteratorInterface) (string, error) {
+	defer iterator.Close()
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for iterator.HasNext() {
+		queryResponse, err := iterator.Next()
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Find next data failed! Error: %s", err))
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		item, _ := json.Marshal(queryResponse)
+		buffer.Write(item)
+		bArrayMemberAlreadyWritten = true
 	}
-	return "Transfer is success", nil
+	buffer.WriteString("]")
+
+	return buffer.String(), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
+
+	// For demo purposes, create two backend for os.Stderr.
+	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
+	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
+
+	// For messages written to backend2 we want to add some additional
+	// information to the output, including the used log level and the name of
+	// the function.
+	backend2Formatter := logging.NewBackendFormatter(backend2, format)
+
+	// Only errors and more severe messages should be sent to backend1
+	backend1Leveled := logging.AddModuleLevel(backend1)
+	backend1Leveled.SetLevel(logging.ERROR, "")
+
+	// Set the backends to be used.
+	logging.SetBackend(backend1Leveled, backend2Formatter)
 	if err := shim.Start(new(SimpleAsset)); err != nil {
 		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
 	}
