@@ -48,7 +48,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
 	}
-	return shim.Success(nil)
+	return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
 }
 
 // Invoke is called per transaction on the chaincode. Each transaction is
@@ -164,7 +164,7 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Failed to set asset: %s;  With Error: %s", args[0], err)
 	}
 
-	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intArgs1+intValueTemp), nil
+	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
 }
 
 // create an account of ledger, args[0] means the account ID, args[1] means the account initial value.
@@ -180,7 +180,7 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
 
-	return fmt.Sprintf("Create account: %s is success!", args[0]), nil
+	return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
 }
 
 // delete an account of ledger. args[0] represents the account ID.
@@ -232,8 +232,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf(fmt.Sprintf("List Result Failed! Error: %s", err))
 	}
 
-	fmt.Printf("queryResult:\n%s\n", result)
-	return fmt.Sprintf("Query success!"), nil
+	return fmt.Sprintf("Query success! Result is: %s", result), nil
 }
 
 // extract results from the iterator
