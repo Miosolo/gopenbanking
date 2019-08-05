@@ -1,0 +1,29 @@
+# We use italktoyou.cn as our official domain(though this domain's name might be a litttle bit inappropriate)
+
+# All the orderers' names and domains 
+OrdererOrgs:
+    - Name: Orderer
+      Domain: orderer.italktoyou.cn
+      Specs:
+          - Hostname: orderer
+
+# All the peers' names and domains
+PeerOrgs:
+    - Name: anz_bank
+      Domain: anz.italktoyou.cn
+      Template:
+          Count: 1
+      Users:
+          Count: 4
+    - Name: citi_bank
+      Domain: citi.italktoyou.cn
+      Template:
+          Count: 1
+      Users:
+          Count: 4
+    - Name: supervisor
+      Domain: supervi.italktoyou.cn
+      Template:
+          Count: 1
+      Users:
+          Count: 1
