@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
+	"time"
+
+	"github.com/hyperledger/fabric/core/chaincode/lib/cid"
 
 	"github.com/op/go-logging"
 
@@ -58,23 +59,44 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
 
-	var result string
-	var err error
-	if fn == "get" { // assume 'get' even if fn is nil
-		result, err = get(stub, args)
-	} else if fn == "add" {
-		result, err = add(stub, args)
-	} else if fn == "reduce" {
-		result, err = reduce(stub, args)
-	} else if fn == "create" {
-		result, err = create(stub, args)
-	} else if fn == "delete" {
-		result, err = delete(stub, args)
-	} else if fn == "transfer" {
-		result, err = transfer(stub, args)
-	} else if fn == "query" {
-		result, err = query(stub, args)
+	sinfo, err := cid.New(stub)
+	org, of, err := sinfo.GetAttributeValue("org")
+	if err != nil {
+		return shim.Error((fmt.Sprintf("get orgAttrVal err: %s", err.Error())))
+	} else {
+		if !of {
+			log.Debug(fmt.Sprintf("not found orgAttribute"))
+			return shim.Error(fmt.Sprintf("not found orgAttribute"))
+		}
 	}
+
+	var result string
+
+	if org == "supervisor" {
+		if fn == "query" {
+			result, err = query(stub, args)
+		} else {
+			result = "you do not have authority to access this function!"
+			err = nil
+		}
+	} else if org == "anz_bank" || org == "citi_bank" {
+		if fn == "get" {
+			result, err = get(stub, args)
+		} else if fn == "add" {
+			result, err = add(stub, args)
+		} else if fn == "reduce" {
+			result, err = reduce(stub, args)
+		} else if fn == "create" {
+			result, err = create(stub, args)
+		} else if fn == "delete" {
+			result, err = delete(stub, args)
+		} else if fn == "transfer" {
+			result, err = transfer(stub, args)
+		} else if fn == "query" {
+			result, err = query(stub, args)
+		}
+	}
+
 	if err != nil {
 		log.Error(err.Error())
 		return shim.Error(err.Error())
@@ -216,48 +238,47 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	argsC[1] = args[2]
 	add(stub, argsC)
 
+	FormatTime, err := stub.GetTxTimestamp()
+	tm := time.Unix(FormatTime.Seconds, 0)
+	historyKey, err := stub.CreateCompositeKey("history", []string{
+		args[0],
+		args[1],
+		stub.GetTxID(),
+		tm.Format("2019-08-06 08:08:08 PM"),
+	})
+	if err != nil {
+		return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+	}
+
+	err = stub.PutState(historyKey, []byte(args[2]))
+	if err != nil {
+		return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+	}
+
 	return fmt.Sprintf("Transfer is success!"), nil
 }
 
 // query for the history
 func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	// Get the iterator for query.
-	it, err := stub.GetHistoryForKey(args[0])
+	if len(args) != 1 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting an account")
+	}
+	var PCKey []string
+	PCKey[0] = args[0]
+	it, err := stub.GetStateByPartialCompositeKey("history", PCKey)
 	if err != nil {
-		return "", fmt.Errorf("GetHistoryForKey Failed! With Error: %s", err)
+		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key!"))
 	}
 
-	result, err := GetHistoryListResult(it)
-	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("List Result Failed! Error: %s", err))
-	}
-
-	return fmt.Sprintf("Query success! Result is: %s", result), nil
-}
-
-// extract results from the iterator
-func GetHistoryListResult(iterator shim.HistoryQueryIteratorInterface) (string, error) {
-	defer iterator.Close()
-	var buffer bytes.Buffer
-	buffer.WriteString("[")
-
-	bArrayMemberAlreadyWritten := false
-	for iterator.HasNext() {
-		queryResponse, err := iterator.Next()
+	defer it.Close()
+	for it.HasNext() {
+		item, err := it.Next()
 		if err != nil {
-			return "", fmt.Errorf(fmt.Sprintf("Find next data failed! Error: %s", err))
+			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
 		}
-		// Add a comma before array members, suppress it for the first array member
-		if bArrayMemberAlreadyWritten == true {
-			buffer.WriteString(",")
-		}
-		item, _ := json.Marshal(queryResponse)
-		buffer.Write(item)
-		bArrayMemberAlreadyWritten = true
+		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
 	}
-	buffer.WriteString("]")
-
-	return buffer.String(), nil
+	return fmt.Sprintf("Query success!"), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
