@@ -3,7 +3,7 @@
 # All the orderers' names and domains 
 OrdererOrgs:
     - Name: Orderer
-      Domain: orderer.italktoyou.cn
+      Domain: italktoyou.cn
       Specs:
           - Hostname: orderer
 
