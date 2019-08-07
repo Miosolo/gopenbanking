@@ -1,0 +1,139 @@
+[34m2019-08-06 14:21:16.707 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-06 14:21:16.707 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-06 14:21:16.707 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-06 14:21:16.728 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-06 14:21:16.760 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-06 14:21:16.760 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 14:21:16.760 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 14:21:16.760 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 14:21:16.760 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 14:21:16.762 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-06 14:21:16.762 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-06 14:21:16.763 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-06 14:21:16.763 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-06 14:21:16.763 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-06 14:21:16.763 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-06 14:21:16.765 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn]
+[34m2019-08-06 14:21:16.769 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: f38169a0fe63b91995c8c20905ce8d1e2487f81ebbdfe5090dfe1d66159eb589, Metadata: 
+[34m2019-08-06 14:21:16.770 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-06 14:21:16.770 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-06 14:21:16.770 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-06 14:21:16.770 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-06 14:21:16.771 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-06 14:21:16.771 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-06 14:21:16.771 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-06 14:21:16.771 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-06 14:21:16.771 CST [discovery] NewService -> INFO 01a[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-06 14:21:16.771 CST [nodeCmd] registerDiscoveryService -> INFO 01b[0m Discovery service activated
+[34m2019-08-06 14:21:16.772 CST [nodeCmd] serve -> INFO 01c[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 14:21:16.772 CST [nodeCmd] serve -> INFO 01d[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 14:21:16.772 CST [kvledger] LoadPreResetHeight -> INFO 01e[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-06 14:21:16.772 CST [fsblkstorage] LoadPreResetHeight -> INFO 01f[0m Loading Pre-reset heights
+[34m2019-08-06 14:21:16.772 CST [fsblkstorage] preRestHtFiles -> INFO 020[0m Dir [/opt/hyperledger/gopenbanking/production/ledgersData/chains/chains] missing... exiting
+[34m2019-08-06 14:21:16.772 CST [fsblkstorage] LoadPreResetHeight -> INFO 021[0m Pre-reset heights loaded
+[33m2019-08-06 14:21:19.770 CST [gossip.discovery] func1 -> WARN 022[0m Could not connect to Endpoint: peer0.anz.italktoyou.cn, InternalEndpoint: peer0.anz.italktoyou.cn, PKI-ID: <nil>, Metadata:  : context deadline exceeded
+[34m2019-08-06 14:21:46.522 CST [nodeCmd] handleSignals -> INFO 023[0m Received signal: 15 (terminated)
+[34m2019-08-06 14:21:46.522 CST [gossip.gossip] Stop -> INFO 024[0m Stopping gossip
+[34m2019-08-06 14:21:46.522 CST [gossip.discovery] Stop -> INFO 025[0m Stopping
+[34m2019-08-06 14:21:46.522 CST [gossip.discovery] Stop -> INFO 026[0m Stopped
+[34m2019-08-06 14:21:46.522 CST [gossip.comm] Stop -> INFO 027[0m Stopping
+[34m2019-08-06 14:21:46.522 CST [gossip.comm] Stop -> INFO 028[0m Stopped
+[34m2019-08-06 14:48:11.711 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-06 14:48:11.711 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-06 14:48:11.711 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-06 14:48:11.734 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-06 14:48:11.766 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-06 14:48:11.767 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 14:48:11.767 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 14:48:11.767 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 14:48:11.767 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 14:48:11.768 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-06 14:48:11.768 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-06 14:48:11.770 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-06 14:48:11.770 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-06 14:48:11.770 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-06 14:48:11.770 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-06 14:48:11.772 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 14:48:11.776 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: f38169a0fe63b91995c8c20905ce8d1e2487f81ebbdfe5090dfe1d66159eb589, Metadata: 
+[34m2019-08-06 14:48:11.776 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-06 14:48:11.776 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-06 14:48:11.776 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-06 14:48:11.777 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-06 14:48:11.777 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-06 14:48:11.777 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-06 14:48:11.777 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-06 14:48:11.777 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-06 14:48:11.778 CST [discovery] NewService -> INFO 01a[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-06 14:48:11.778 CST [nodeCmd] registerDiscoveryService -> INFO 01b[0m Discovery service activated
+[34m2019-08-06 14:48:11.778 CST [nodeCmd] serve -> INFO 01c[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 14:48:11.778 CST [nodeCmd] serve -> INFO 01d[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 14:48:11.778 CST [kvledger] LoadPreResetHeight -> INFO 01e[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-06 14:48:11.778 CST [fsblkstorage] LoadPreResetHeight -> INFO 01f[0m Loading Pre-reset heights
+[34m2019-08-06 14:48:11.778 CST [fsblkstorage] preRestHtFiles -> INFO 020[0m Dir [/opt/hyperledger/gopenbanking/production/ledgersData/chains/chains] missing... exiting
+[34m2019-08-06 14:48:11.778 CST [fsblkstorage] LoadPreResetHeight -> INFO 021[0m Pre-reset heights loaded
+[34m2019-08-06 22:51:26.638 CST [nodeCmd] handleSignals -> INFO 022[0m Received signal: 15 (terminated)
+[34m2019-08-06 22:51:26.638 CST [gossip.gossip] Stop -> INFO 023[0m Stopping gossip
+[34m2019-08-06 22:51:26.638 CST [gossip.discovery] Stop -> INFO 024[0m Stopping
+[34m2019-08-06 22:51:26.638 CST [gossip.discovery] Stop -> INFO 025[0m Stopped
+[34m2019-08-06 22:51:26.638 CST [gossip.comm] Stop -> INFO 026[0m Stopping
+[34m2019-08-06 22:51:26.638 CST [gossip.comm] Stop -> INFO 027[0m Stopped
+[34m2019-08-06 23:20:36.039 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-06 23:20:36.040 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-06 23:20:36.040 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-06 23:20:36.060 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-06 23:20:36.101 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-06 23:20:36.102 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 23:20:36.102 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 23:20:36.102 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-06 23:20:36.102 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-06 23:20:36.103 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-06 23:20:36.104 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-06 23:20:36.105 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-06 23:20:36.105 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-06 23:20:36.105 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-06 23:20:36.105 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-06 23:20:36.107 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 23:20:36.110 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: f38169a0fe63b91995c8c20905ce8d1e2487f81ebbdfe5090dfe1d66159eb589, Metadata: 
+[34m2019-08-06 23:20:36.110 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-06 23:20:36.110 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-06 23:20:36.111 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-06 23:20:36.111 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-06 23:20:36.111 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-06 23:20:36.111 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-06 23:20:36.111 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-06 23:20:36.111 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-06 23:20:36.112 CST [discovery] NewService -> INFO 01a[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-06 23:20:36.112 CST [nodeCmd] registerDiscoveryService -> INFO 01b[0m Discovery service activated
+[34m2019-08-06 23:20:36.112 CST [nodeCmd] serve -> INFO 01c[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 23:20:36.112 CST [nodeCmd] serve -> INFO 01d[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-06 23:20:36.112 CST [kvledger] LoadPreResetHeight -> INFO 01e[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-06 23:20:36.112 CST [fsblkstorage] LoadPreResetHeight -> INFO 01f[0m Loading Pre-reset heights
+[34m2019-08-06 23:20:36.112 CST [fsblkstorage] preRestHtFiles -> INFO 020[0m Dir [/opt/hyperledger/gopenbanking/production/ledgersData/chains/chains] missing... exiting
+[34m2019-08-06 23:20:36.112 CST [fsblkstorage] LoadPreResetHeight -> INFO 021[0m Pre-reset heights loaded
