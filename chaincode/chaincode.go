@@ -44,7 +44,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	}
 	// get the client identity who is visiting the chaincode.
 	sinfo, err := cid.New(stub)
-	org, of, err := sinfo.GetAttributeValue("org")
+	org, of, err := sinfo.GetAttributeValue("Name")
 	if err != nil {
 		log.Error(fmt.Sprintf("get orgAttrVal err: %s", err.Error()))
 		return shim.Error((fmt.Sprintf("get orgAttrVal err: %s", err.Error())))
@@ -78,7 +78,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	fn, args := stub.GetFunctionAndParameters()
 
 	sinfo, err := cid.New(stub)
-	org, of, err := sinfo.GetAttributeValue("org")
+	org, of, err := sinfo.GetAttributeValue("Name")
 	if err != nil {
 		return shim.Error((fmt.Sprintf("get orgAttrVal err: %s", err.Error())))
 	} else {
