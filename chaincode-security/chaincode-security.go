@@ -43,7 +43,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
 	// Set up any variables or assets here by calling stub.PutState()
 	// We store the key and the value on the ledger
-	err = stub.PutState(args[0], []byte(args[1]))
+	err := stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		log.Debug(fmt.Sprintf("not found orgAttribute"))
 		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
@@ -60,6 +60,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	fn, args := stub.GetFunctionAndParameters()
 
 	var result string
+	var err error
 
 	if fn == "get" {
 		result, err = get(stub, args)
