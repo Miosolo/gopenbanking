@@ -42,14 +42,32 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
-
-	// Set up any variables or assets here by calling stub.PutState()
-	// We store the key and the value on the ledger
-	err := stub.PutState(args[0], []byte(args[1]))
+	// get the client identity who is visiting the chaincode.
+	sinfo, err := cid.New(stub)
+	org, of, err := sinfo.GetAttributeValue("org")
 	if err != nil {
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+		log.Error(fmt.Sprintf("get orgAttrVal err: %s", err.Error()))
+		return shim.Error((fmt.Sprintf("get orgAttrVal err: %s", err.Error())))
+	} else {
+		if !of {
+			log.Debug(fmt.Sprintf("not found orgAttribute"))
+			return shim.Error(fmt.Sprintf("not found orgAttribute"))
+		}
 	}
-	return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+
+	if org == "anz_bank" {
+		// Set up any variables or assets here by calling stub.PutState()
+		// We store the key and the value on the ledger
+		err = stub.PutState(args[0], []byte(args[1]))
+		if err != nil {
+			log.Debug(fmt.Sprintf("not found orgAttribute"))
+			return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+		}
+		return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+	} else {
+		// forbid the other organizations from initializing the ledger
+		return shim.Error("You do not have authority to access this function!")
+	}
 }
 
 // Invoke is called per transaction on the chaincode. Each transaction is
@@ -71,7 +89,6 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	}
 
 	var result string
-
 	if org == "supervisor" {
 		if fn == "query" {
 			result, err = query(stub, args)
@@ -161,17 +178,17 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
 	}
-
+	// Get the account from the worldstate database.
 	valueTemp, err := stub.GetState(args[0])
 	if err != nil {
 		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
 	}
-
+	// change the argument into integer.
 	intArgs1, err := strconv.Atoi(args[1])
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
 	}
-
+	//
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
