@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	configPath "./config.yaml" // TODO: for multiple org & users, 2+ config?
-	channelName "" // TODO
+	configPath = "./config.yaml" // TODO: for multiple org & users, 2+ config?
+	channelName = "" // TODO
 )
 
 var (
@@ -20,28 +20,28 @@ var (
 	role string
 )
 
-//init() load the config file & initiate the sdk kit
-func init() (err error) {
+//initSDK() load the config file & initiate the sdk kit
+func initSDK() (err error) {
 	configProvider := config.FromFile(configPath)
-	sdk, err := fabsdk.New(configProvider)
+	sdk, err = fabsdk.New(configProvider)
 	return err
 }
 
 //identify() inject the roles into the context
 func identify() (err error) {
-	mspClient, err := clientmsp.New(sdk.Context(), clientsmp.WithOrg(orgID))
+	mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgID))
 	if err != nil {
-		log.Println("create msp client fail: %s\n", err.Error())
+		log.Printf("create msp client fail: %s\n", err.Error())
 		return err
 	}
 
 	identity, err := mspClient.GetSigningIdentity(role)
 	if err != nil {
-		log.Println("get admin identify fail: %s\n", err.Error())
+		log.Printf("get identify fail: %s\n", err.Error())
 		return err
-	} else {
-		fmt.Println("AdminIdentify is found:" + identity)
 	}
+	fmt.Println("Identify is found: " + identity.Identifier().MSPID)
+	return nil
 }
 
 //invoke() connects to the channel, makes up a transaction request,
@@ -49,11 +49,11 @@ func identify() (err error) {
 func invoke(fn string) (err error) {
 	channelProvider := sdk.ChannelContext(channelName,
 		fabsdk.WithUser(role),
-		fabsdk.WithOrg(org))
+		fabsdk.WithOrg(orgID))
 
 	channelClient, err := channel.New(channelProvider)
 	if err != nil {
-		log.Println("create channel client fail: %s\n", err.Error())
+		log.Printf("create channel client fail: %s\n", err.Error())
 		return err
 	}
 
@@ -69,9 +69,10 @@ func invoke(fn string) (err error) {
 	if err != nil {
 		log.Println("operation fail: ", err.Error())
 		return err
-	} else {
-		fmt.Printf("response is %s\n", response.Payload)
 	}
+	
+	fmt.Printf("response is %s\n", response.Payload)
+	return nil
 }
 
 
@@ -81,17 +82,17 @@ func main() {
 	fn := "" // stub
 
 	// init the env
-	if err := init(); err != nil {
+	if err := initSDK(); err != nil {
 		log.Fatalf("create sdk fail: %s\n", err.Error())
 	}
 
 	// identify the org & role	
-	if err = identify(); err != nil {
+	if err := identify(); err != nil {
 		log.Fatalf("identify user fail: %s\n", err.Error())
 	}
 
 	// invoke the smart contract
-	if err = invoke(fn); err != nil {
+	if err := invoke(fn); err != nil {
 		log.Fatalf("invoke chaincode fail: %s\n", err.Error())
 	}	
 }
