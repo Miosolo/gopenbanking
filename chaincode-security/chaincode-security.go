@@ -210,56 +210,111 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	//reduce money from the debit account.
 	var argsD []string = make([]string, 2)
 	argsD[0] = args[0]
-	args[1] = args[2]
-	reduce(stub, argsD)
+	argsD[1] = args[2]
+	_, err := reduce(stub, argsD)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Reduce debit account failed!"))
+	}
 
 	//add money to the cebit account.
 	var argsC []string = make([]string, 2)
 	argsC[0] = args[1]
 	argsC[1] = args[2]
-	add(stub, argsC)
-
-	FormatTime, err := stub.GetTxTimestamp()
-	tm := time.Unix(FormatTime.Seconds, 0)
-	historyKey, err := stub.CreateCompositeKey("history", []string{
-		args[0],
-		args[1],
-		stub.GetTxID(),
-		tm.Format("2019-08-06 08:08:08 PM"),
-	})
+	_, err = add(stub, argsC)
 	if err != nil {
-		return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed!"))
 	}
 
-	err = stub.PutState(historyKey, []byte(args[2]))
+	msg, err := CreateHistoryKey(stub, args, "out")
 	if err != nil {
-		return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+		return "", fmt.Errorf("Create history records failed! with error: %s", err)
 	}
+	log.Info(msg)
+
+	msg, err = CreateHistoryKey(stub, args, "in")
+	if err != nil {
+		return "", fmt.Errorf("Create history records failed! with error: %s", err)
+	}
+	log.Info(msg)
 
 	return fmt.Sprintf("Transfer is success!"), nil
 }
 
-// query for the history
-func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 1 {
-		return "", fmt.Errorf("Incorrect arguments. Expecting an account")
+// create history transfer records
+func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first string) (string, error) {
+	FormatTime, err := stub.GetTxTimestamp()
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Get transaction timestamp failed!"))
 	}
-	var PCKey []string
-	PCKey[0] = args[0]
-	it, err := stub.GetStateByPartialCompositeKey("history", PCKey)
+	tm := time.Unix(FormatTime.Seconds, 0)
+
+	if first == "out" {
+		historyKey, err := stub.CreateCompositeKey(first, []string{
+			args[0],
+			"\t",
+			args[1],
+			"\t",
+			stub.GetTxID(),
+			"\t",
+			tm.Format("Mon Jan 2 15:04:05 +0000 GMT 2006"),
+		})
+		if err != nil {
+			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+		}
+
+		err = stub.PutState(historyKey, []byte(args[2]))
+		if err != nil {
+			return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+		}
+
+	} else if first == "in" {
+		historyKey, err := stub.CreateCompositeKey(first, []string{
+			args[1],
+			"\t",
+			args[0],
+			"\t",
+			stub.GetTxID(),
+			"\t",
+			tm.Format("2019-08-06 08:08:08 PM"),
+		})
+		if err != nil {
+			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+		}
+
+		err = stub.PutState(historyKey, []byte(args[2]))
+		if err != nil {
+			return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+		}
+	}
+
+	return fmt.Sprintf("Insert records success!"), nil
+}
+
+// query for the history. args[0] represents the objectType
+// args[1] represents the account name
+func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 2 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting an objectType and an account.")
+	}
+	var PCKey []string = make([]string, 1)
+	PCKey[0] = args[1]
+	it, err := stub.GetStateByPartialCompositeKey(args[0], PCKey)
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key!"))
 	}
 
 	defer it.Close()
+	// result contains all the appropriate results
+	result := ""
 	for it.HasNext() {
 		item, err := it.Next()
 		if err != nil {
 			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
 		}
 		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
+		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey(), item.GetValue())
 	}
-	return fmt.Sprintf("Query success!"), nil
+	return fmt.Sprintf("Query success! The result is:\n %s", result), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
