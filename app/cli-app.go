@@ -43,7 +43,7 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
 	channelClient, err := channel.New(channelProvider)
 	if err != nil {
 		log.Printf("create channel client fail: %s\n", err.Error())
-		return err
+		return "", err
 	}
 
 	var byteArgs [][]byte
@@ -95,9 +95,14 @@ func main() {
 
 	// print the instructions // TODO
 	fmt.Println(`Functions and parameters of the ANZ-CITI Banking Network:
-	- 
-	- 
-	- exit: terminate the loop and exit`)
+	- (Bank) "get" + account
+	- (Bank) "add" + account + value
+	- (Bank) "reduce" + account + value
+	- (Bank) "create" + account + inititial value
+	- (Bank) "delete" + account
+	- (Bank) "tranfer" + debit account + credit account + tranfer value
+	- (Any) "query" + object type + account name
+	- (Any) "exit": terminate the loop and exit`)
 	// start loop
 	for true {
 		// read the stdin input
@@ -116,7 +121,7 @@ func main() {
 
 		// else, invoke the smart contract
 		if response, err := invoke(sdk, *channelID, *orgID, *orgRole, *chaincodeID, fn, args[1:inputCnt]); err != nil {
-			log.Println("invoke chaincode fail: %s\n", err.Error())
+			log.Printf("invoke chaincode fail: %s\n", err.Error())
 		} else {
 			fmt.Println("Response: " + response)
 		}
