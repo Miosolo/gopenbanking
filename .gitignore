@@ -16,3 +16,4 @@
 
 # production
 production/
+*.block

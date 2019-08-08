@@ -1,13 +1,13 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	clientmsp "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"log"
-	"flag"
 	"os"
 )
 
@@ -34,7 +34,7 @@ func identify(sdk *fabsdk.FabricSDK, orgName, orgRole string) (err error) {
 
 //invoke() connects to the channel, makes up a transaction request,
 //and handles the response
-func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, ccFunction string) (err error) {
+func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, chaincodeID, ccFunction string) (err error) {
 	channelProvider := sdk.ChannelContext(channelID,
 		fabsdk.WithUser(orgRole),
 		fabsdk.WithOrg(orgID))
@@ -49,8 +49,8 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, ccFunction string)
 	args = append(args, []byte("key1"))
 
 	request := channel.Request{
-		ChaincodeID: "", // TODO
-		Fcn:         fn,
+		ChaincodeID: chaincodeID, // TODO
+		Fcn:         ccFunction,
 		Args:        args,
 	}
 	response, err := channelClient.Query(request)
@@ -58,7 +58,7 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, ccFunction string)
 		log.Println("operation fail: ", err.Error())
 		return err
 	}
-	
+
 	fmt.Printf("response is %s\n", response.Payload)
 	return nil
 }
@@ -66,14 +66,15 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, ccFunction string)
 func main() {
 	// define the flags & parse the params
 	channelID := flag.String("chan", "orgchannel", `Name of the channel, default "orgchannel"`)
-	orgName := flag.String("org", "", "Name of your orgnization")
+	orgID := flag.String("org", "", "Name of your orgnization")
 	orgRole := flag.String("role", "client", `Your role in this organization, default "client"`)
 	chaincodeID := flag.String("cc", "", "ID of the chaincode instanciated")
-	ccFunction := flag.String("fn", "", "The function of smart contract to call")
 	flag.Parse()
 
-	// TODO: set env
-	os.Setenv("FABRIC_SDK_GO_PROJECT_PATH", "")
+	// set env for YAML parsing
+	os.Setenv("FABRIC_SDK_GO_PROJECT_PATH", "$PWD")
+	os.Setenv("FABRIC_ORG_ID", *orgID)
+	os.Setenv("CRYPTOCONFIG_FIXTURES_PATH", "crypto-config/"+*orgID)
 
 	// init the env
 	configProvider := config.FromFile(configPath)
@@ -84,13 +85,24 @@ func main() {
 		log.Fatalf("Failed to create new SDK: %s", err)
 	}
 
-	// identify the org & role	
-	if err := identify(); err != nil {
+	// identify the org & role
+	if err := identify(sdk, *orgID, *orgRole); err != nil {
 		log.Fatalf("identify user fail: %s\n", err.Error())
 	}
 
-	// invoke the smart contract
-	if err := invoke(fn); err != nil {
-		log.Fatalf("invoke chaincode fail: %s\n", err.Error())
-	}	
+	// print the instructions // TODO
+	fmt.Println(`Functions and parameters of the ANZ-CITI Banking Network:
+	- `)
+	// start loop
+	for true {
+		// read the stdin input
+		fmt.Printf("Enter the function & params: ")
+		var fn, 
+		fmt.Scanln()
+
+		// invoke the smart contract
+		if err := invoke(sdk, *channelID, *orgID, *orgRole, *chaincodeID, *ccFunction); err != nil {
+			log.Fatalf("invoke chaincode fail: %s\n", err.Error())
+		}
+	}
 }
