@@ -2,3 +2,4 @@ language: go
 script: 
   - go build app
   - go build chaincode
+  - go build chaincode-security
