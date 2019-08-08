@@ -7,35 +7,23 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"log"
+	"flag"
+	"os"
 )
 
 const (
 	configPath = "./config.yaml" // TODO: for multiple org & users, 2+ config?
-	channelName = "" // TODO
 )
-
-var (
-	sdk	*fabsdk.FabricSDK
-	orgID	string
-	role string
-)
-
-//initSDK() load the config file & initiate the sdk kit
-func initSDK() (err error) {
-	configProvider := config.FromFile(configPath)
-	sdk, err = fabsdk.New(configProvider)
-	return err
-}
 
 //identify() inject the roles into the context
-func identify() (err error) {
-	mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgID))
+func identify(sdk *fabsdk.FabricSDK, orgName, orgRole string) (err error) {
+	mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgName))
 	if err != nil {
 		log.Printf("create msp client fail: %s\n", err.Error())
 		return err
 	}
 
-	identity, err := mspClient.GetSigningIdentity(role)
+	identity, err := mspClient.GetSigningIdentity(orgRole)
 	if err != nil {
 		log.Printf("get identify fail: %s\n", err.Error())
 		return err
@@ -46,9 +34,9 @@ func identify() (err error) {
 
 //invoke() connects to the channel, makes up a transaction request,
 //and handles the response
-func invoke(fn string) (err error) {
-	channelProvider := sdk.ChannelContext(channelName,
-		fabsdk.WithUser(role),
+func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, ccFunction string) (err error) {
+	channelProvider := sdk.ChannelContext(channelID,
+		fabsdk.WithUser(orgRole),
 		fabsdk.WithOrg(orgID))
 
 	channelClient, err := channel.New(channelProvider)
@@ -75,15 +63,25 @@ func invoke(fn string) (err error) {
 	return nil
 }
 
-
 func main() {
+	// define the flags & parse the params
+	channelID := flag.String("chan", "orgchannel", `Name of the channel, default "orgchannel"`)
+	orgName := flag.String("org", "", "Name of your orgnization")
+	orgRole := flag.String("role", "client", `Your role in this organization, default "client"`)
+	chaincodeID := flag.String("cc", "", "ID of the chaincode instanciated")
+	ccFunction := flag.String("fn", "", "The function of smart contract to call")
+	flag.Parse()
 
-	// TODO: read params {org, role, fn} from the cli
-	fn := "" // stub
+	// TODO: set env
+	os.Setenv("FABRIC_SDK_GO_PROJECT_PATH", "")
 
 	// init the env
-	if err := initSDK(); err != nil {
-		log.Fatalf("create sdk fail: %s\n", err.Error())
+	configProvider := config.FromFile(configPath)
+	sdk, err := fabsdk.New(configProvider)
+	defer sdk.Close()
+
+	if err != nil {
+		log.Fatalf("Failed to create new SDK: %s", err)
 	}
 
 	// identify the org & role	
