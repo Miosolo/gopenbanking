@@ -34,7 +34,8 @@ func identify(sdk *fabsdk.FabricSDK, orgName, orgRole string) (err error) {
 
 //invoke() connects to the channel, makes up a transaction request,
 //and handles the response
-func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, chaincodeID, ccFunction string) (err error) {
+func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
+	orgRole, chaincodeID, ccFunction string, args []string) (resp string, err error) {
 	channelProvider := sdk.ChannelContext(channelID,
 		fabsdk.WithUser(orgRole),
 		fabsdk.WithOrg(orgID))
@@ -45,22 +46,24 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID, orgRole, chaincodeID, ccFun
 		return err
 	}
 
-	var args [][]byte
-	args = append(args, []byte("key1"))
+	var byteArgs [][]byte
+	for _, arg := range(args) {
+		byteArgs = append(byteArgs, []byte(arg))
+	}
 
 	request := channel.Request{
-		ChaincodeID: chaincodeID, // TODO
+		ChaincodeID: chaincodeID,
 		Fcn:         ccFunction,
-		Args:        args,
+		Args:        byteArgs,
 	}
+
 	response, err := channelClient.Query(request)
 	if err != nil {
 		log.Println("operation fail: ", err.Error())
-		return err
+		return "", err
 	}
 
-	fmt.Printf("response is %s\n", response.Payload)
-	return nil
+	return string(response.Payload), nil
 }
 
 func main() {
@@ -92,17 +95,30 @@ func main() {
 
 	// print the instructions // TODO
 	fmt.Println(`Functions and parameters of the ANZ-CITI Banking Network:
-	- `)
+	- 
+	- 
+	- exit: terminate the loop and exit`)
 	// start loop
 	for true {
 		// read the stdin input
 		fmt.Printf("Enter the function & params: ")
-		var fn, 
-		fmt.Scanln()
+		var fn string
+		var args [3]string // max args: 3 due to the chaincode
+		// inputCnt - 1 = args Count
+		inputCnt, _ := fmt.Scanln(&fn, &args[0], &args[1], &args[2])
 
-		// invoke the smart contract
-		if err := invoke(sdk, *channelID, *orgID, *orgRole, *chaincodeID, *ccFunction); err != nil {
-			log.Fatalf("invoke chaincode fail: %s\n", err.Error())
+		if (inputCnt == 0) {
+			continue
+		} else if (fn == "exit") {
+			fmt.Println("bye")
+			return
+		}
+
+		// else, invoke the smart contract
+		if response, err := invoke(sdk, *channelID, *orgID, *orgRole, *chaincodeID, fn, args[1:inputCnt]); err != nil {
+			log.Println("invoke chaincode fail: %s\n", err.Error())
+		} else {
+			fmt.Println("Response: " + response)
 		}
 	}
 }
