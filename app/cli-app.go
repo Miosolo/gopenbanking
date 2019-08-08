@@ -12,32 +12,32 @@ import (
 )
 
 const (
-	configPath = "./config.yaml" // TODO: for multiple org & users, 2+ config?
+	configPath = "./config.yaml"
 )
 
 //identify() inject the roles into the context
-func identify(sdk *fabsdk.FabricSDK, orgName, orgRole string) (err error) {
-	mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgName))
+func identify(sdk *fabsdk.FabricSDK, orgID, orgUser string) (err error) {
+	mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgID))
 	if err != nil {
 		log.Printf("create msp client fail: %s\n", err.Error())
 		return err
 	}
 
-	identity, err := mspClient.GetSigningIdentity(orgRole)
+	identity, err := mspClient.GetSigningIdentity(orgUser)
 	if err != nil {
-		log.Printf("get identify fail: %s\n", err.Error())
 		return err
 	}
-	fmt.Println("Identify is found: " + identity.Identifier().MSPID)
+
+	log.Println("Identify is found: " + identity.Identifier().MSPID)
 	return nil
 }
 
 //invoke() connects to the channel, makes up a transaction request,
 //and handles the response
 func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
-	orgRole, chaincodeID, ccFunction string, args []string) (resp string, err error) {
+	orgUser, chaincodeID, ccFunction string, args []string) (resp string, err error) {
 	channelProvider := sdk.ChannelContext(channelID,
-		fabsdk.WithUser(orgRole),
+		fabsdk.WithUser(orgUser),
 		fabsdk.WithOrg(orgID))
 
 	channelClient, err := channel.New(channelProvider)
@@ -47,7 +47,7 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
 	}
 
 	var byteArgs [][]byte
-	for _, arg := range(args) {
+	for _, arg := range args {
 		byteArgs = append(byteArgs, []byte(arg))
 	}
 
@@ -68,16 +68,15 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
 
 func main() {
 	// define the flags & parse the params
-	channelID := flag.String("chan", "orgchannel", `Name of the channel, default "orgchannel"`)
-	orgID := flag.String("org", "", "Name of your orgnization")
-	orgRole := flag.String("role", "client", `Your role in this organization, default "client"`)
+	channelID := flag.String("chan", "orgchannel", `Name of the channel`)
+	orgID := flag.String("org", "ANZBank", "Name of your orgnization")
+	orgUser := flag.String("user", "User1", `Your User ID in this organization`)
 	chaincodeID := flag.String("cc", "", "ID of the chaincode instanciated")
 	flag.Parse()
 
 	// set env for YAML parsing
-	os.Setenv("FABRIC_SDK_GO_PROJECT_PATH", "$PWD")
+	os.Setenv("CRYPTOCONFIG_PATH", os.Getenv("GOPATH")+"/src/github.com/Miosolo/gopenbanking/app/crypto-config/"+*orgID)
 	os.Setenv("FABRIC_ORG_ID", *orgID)
-	os.Setenv("CRYPTOCONFIG_FIXTURES_PATH", "crypto-config/"+*orgID)
 
 	// init the env
 	configProvider := config.FromFile(configPath)
@@ -89,8 +88,8 @@ func main() {
 	}
 
 	// identify the org & role
-	if err := identify(sdk, *orgID, *orgRole); err != nil {
-		log.Fatalf("identify user fail: %s\n", err.Error())
+	if err := identify(sdk, *orgID, *orgUser); err != nil {
+		log.Fatalf("identify %s fail: %s\n", *orgUser, err.Error())
 	}
 
 	// print the instructions // TODO
@@ -112,15 +111,15 @@ func main() {
 		// inputCnt - 1 = args Count
 		inputCnt, _ := fmt.Scanln(&fn, &args[0], &args[1], &args[2])
 
-		if (inputCnt == 0) {
+		if inputCnt == 0 {
 			continue
-		} else if (fn == "exit") {
+		} else if fn == "exit" {
 			fmt.Println("bye")
 			return
 		}
 
 		// else, invoke the smart contract
-		if response, err := invoke(sdk, *channelID, *orgID, *orgRole, *chaincodeID, fn, args[1:inputCnt]); err != nil {
+		if response, err := invoke(sdk, *channelID, *orgID, *orgUser, *chaincodeID, fn, args[1:inputCnt]); err != nil {
 			log.Printf("invoke chaincode fail: %s\n", err.Error())
 		} else {
 			fmt.Println("Response: " + response)
