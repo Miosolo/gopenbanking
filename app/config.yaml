@@ -66,7 +66,7 @@ client:
 
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
-    path: ${CRYPTOCONFIG_PATH}/{FABRIC_ORG_ID}
+    path: ${FABRIC_CRYPTOCONFIG_PATH}
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -98,9 +98,9 @@ client:
     # [Optional]. Client key and cert for TLS handshake with peers and orderers
     #client:
       #key:
-        #path: ${CRYPTOCONFIG_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
+        #path: ${FABRIC_CRYPTOCONFIG_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
       #cert:
-        #path: ${CRYPTOCONFIG_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
+        #path: ${FABRIC_CRYPTOCONFIG_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
 
 #
 # [Optional]. But most apps would have this section so that channel objects can be constructed
@@ -259,10 +259,10 @@ organizations:
   ANZBank:
     mspid: ANZBankMSP
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
-    cryptoPath:  peerOrganizations/anz.italktoyou.cn/msp
+    cryptoPath: peerOrganizations/anz.italktoyou.cn/users/{username}@anz.italktoyou.cn/msp
     peers:
       - peer0.anz.italktoyou.cn
-
+    
   # the profile will contain public information about organizations other than the one it belongs to.
   # These are necessary information to make transaction lifecycles work, including MSP IDs and
   # peers with a public URL to send transaction proposals. The file will not contain private
@@ -316,7 +316,7 @@ orderers:
     # url: orderer.example.com:7050
     tlsCACerts:
       # Certificate location absolute path
-      path: ${CRYPTOCONFIG_PATH}/ordererOrganizations/italktoyou.cn/tlsca/tlsca.italktoyou.cn-cert.pem
+      path: ${FABRIC_CRYPTOCONFIG_PATH}/ordererOrganizations/italktoyou.cn/tlsca/tlsca.italktoyou.cn-cert.pem
 
 #
 # List of peers to send various requests to, including endorsement, query
@@ -342,19 +342,19 @@ peers:
     url: peer0.supervi.italktoyou.cn:7051
     tlsCACerts:
       # Certificate location absolute path
-      path: ${CRYPTOCONFIG_PATH}/peerOrganizations/supervi.italktoyou.cn/tlsca/tlsca.supervi.italktoyou.cn-cert.pem
+      path: ${FABRIC_CRYPTOCONFIG_PATH}/peerOrganizations/supervi.italktoyou.cn/tlsca/tlsca.supervi.italktoyou.cn-cert.pem
 
   peer0.citi.italktoyou.cn:
     # this URL is used to send endorsement and query requests
     url: peer0.citi.italktoyou.cn:7051
     tlsCACerts:
       # Certificate location absolute path
-      path: ${CRYPTOCONFIG_PATH}/peerOrganizations/citi.italktoyou.cn/tlsca/tlsca.citi.italktoyou.cn-cert.pem
+      path: ${FABRIC_CRYPTOCONFIG_PATH}/peerOrganizations/citi.italktoyou.cn/tlsca/tlsca.citi.italktoyou.cn-cert.pem
 
   peer0.anz.italktoyou.cn:
     url: peer0.anz.italktoyou.cn:7051
     tlsCACerts:
-      path: ${CRYPTOCONFIG_PATH}/peerOrganizations/anz.italktoyou.cn/tlsca/tlsca.anz.italktoyou.cn-cert.pem
+      path: ${FABRIC_CRYPTOCONFIG_PATH}/peerOrganizations/anz.italktoyou.cn/tlsca/tlsca.anz.italktoyou.cn-cert.pem
 
 # EntityMatchers enable substitution of network hostnames with static configurations
  # so that properties can be mapped. Regex can be used for this purpose
