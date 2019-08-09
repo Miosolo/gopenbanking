@@ -1,5 +1,3 @@
 language: go
-script: 
-  - cd app && make
-  - go build chaincode
-  - go build chaincode-security
+
+# uses makefile in root directory by default
