@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/op/go-logging"
 
@@ -46,9 +45,11 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	// We store the key and the value on the ledger
 	err := stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
+		log.Debug(fmt.Sprintf("not found orgAttribute"))
 		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
 	}
 	return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+
 }
 
 // Invoke is called per transaction on the chaincode. Each transaction is
@@ -60,7 +61,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 	var result string
 	var err error
-	if fn == "get" { // assume 'get' even if fn is nil
+
+	if fn == "get" {
 		result, err = get(stub, args)
 	} else if fn == "add" {
 		result, err = add(stub, args)
@@ -75,6 +77,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	} else if fn == "query" {
 		result, err = query(stub, args)
 	}
+
 	if err != nil {
 		log.Error(err.Error())
 		return shim.Error(err.Error())
@@ -139,17 +142,17 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name and a balance value.")
 	}
-
+	// Get the account from the worldstate database.
 	valueTemp, err := stub.GetState(args[0])
 	if err != nil {
 		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
 	}
-
+	// change the argument into integer.
 	intArgs1, err := strconv.Atoi(args[1])
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
 	}
-
+	//
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
@@ -207,57 +210,111 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	//reduce money from the debit account.
 	var argsD []string = make([]string, 2)
 	argsD[0] = args[0]
-	args[1] = args[2]
-	reduce(stub, argsD)
+	argsD[1] = args[2]
+	_, err := reduce(stub, argsD)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Reduce debit account failed!"))
+	}
 
 	//add money to the cebit account.
 	var argsC []string = make([]string, 2)
 	argsC[0] = args[1]
 	argsC[1] = args[2]
-	add(stub, argsC)
+	_, err = add(stub, argsC)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed!"))
+	}
+
+	msg, err := CreateHistoryKey(stub, args, "out")
+	if err != nil {
+		return "", fmt.Errorf("Create history records failed! with error: %s", err)
+	}
+	log.Info(msg)
+
+	msg, err = CreateHistoryKey(stub, args, "in")
+	if err != nil {
+		return "", fmt.Errorf("Create history records failed! with error: %s", err)
+	}
+	log.Info(msg)
 
 	return fmt.Sprintf("Transfer is success!"), nil
 }
 
-// query for the history
-func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	// Get the iterator for query.
-	it, err := stub.GetHistoryForKey(args[0])
+// create history transfer records
+func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first string) (string, error) {
+	FormatTime, err := stub.GetTxTimestamp()
 	if err != nil {
-		return "", fmt.Errorf("GetHistoryForKey Failed! With Error: %s", err)
+		return "", fmt.Errorf(fmt.Sprintf("Get transaction timestamp failed!"))
+	}
+	tm := time.Unix(FormatTime.Seconds, 0)
+
+	if first == "out" {
+		historyKey, err := stub.CreateCompositeKey(first, []string{
+			args[0],
+			"\t",
+			args[1],
+			"\t",
+			stub.GetTxID(),
+			"\t",
+			tm.Format("Mon Jan 2 15:04:05 +0000 GMT 2006"),
+		})
+		if err != nil {
+			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+		}
+
+		err = stub.PutState(historyKey, []byte(args[2]))
+		if err != nil {
+			return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+		}
+
+	} else if first == "in" {
+		historyKey, err := stub.CreateCompositeKey(first, []string{
+			args[1],
+			"\t",
+			args[0],
+			"\t",
+			stub.GetTxID(),
+			"\t",
+			tm.Format("2019-08-06 08:08:08 PM"),
+		})
+		if err != nil {
+			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
+		}
+
+		err = stub.PutState(historyKey, []byte(args[2]))
+		if err != nil {
+			return "", fmt.Errorf("Store transfer information failed! With error: %s", err)
+		}
 	}
 
-	result, err := GetHistoryListResult(it)
-	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("List Result Failed! Error: %s", err))
-	}
-
-	return fmt.Sprintf("Query success! Result is: %s", result), nil
+	return fmt.Sprintf("Insert records success!"), nil
 }
 
-// extract results from the iterator
-func GetHistoryListResult(iterator shim.HistoryQueryIteratorInterface) (string, error) {
-	defer iterator.Close()
-	var buffer bytes.Buffer
-	buffer.WriteString("[")
-
-	bArrayMemberAlreadyWritten := false
-	for iterator.HasNext() {
-		queryResponse, err := iterator.Next()
-		if err != nil {
-			return "", fmt.Errorf(fmt.Sprintf("Find next data failed! Error: %s", err))
-		}
-		// Add a comma before array members, suppress it for the first array member
-		if bArrayMemberAlreadyWritten == true {
-			buffer.WriteString(",")
-		}
-		item, _ := json.Marshal(queryResponse)
-		buffer.Write(item)
-		bArrayMemberAlreadyWritten = true
+// query for the history. args[0] represents the objectType
+// args[1] represents the account name
+func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 2 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting an objectType and an account.")
 	}
-	buffer.WriteString("]")
+	var PCKey []string = make([]string, 1)
+	PCKey[0] = args[1]
+	it, err := stub.GetStateByPartialCompositeKey(args[0], PCKey)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key!"))
+	}
 
-	return buffer.String(), nil
+	defer it.Close()
+	// result contains all the appropriate results
+	result := ""
+	for it.HasNext() {
+		item, err := it.Next()
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
+		}
+		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
+		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey(), item.GetValue())
+	}
+	return fmt.Sprintf("Query success! The result is:\n %s", result), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
