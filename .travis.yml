@@ -1,5 +1,5 @@
 language: go
 script: 
-  - go build app
+  - cd app && make
   - go build chaincode
   - go build chaincode-security
