@@ -17,3 +17,6 @@
 # production
 production/
 *.block
+app/app
+chaincode/chaincode
+chaincode-security/chaincode-security
