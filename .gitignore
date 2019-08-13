@@ -13,3 +13,19 @@
 
 fabric-ca/fabric-ca-server.db
 cc_gopenbanking
+
+# production
+production/
+*.block
+*tx
+
+#build prodections
+app/app
+chaincode/chaincode
+chaincode-security/chaincode-security
+
+# logs
+*.log
+orderor/*.log
+config/*.log
+
