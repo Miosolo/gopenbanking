@@ -73,7 +73,7 @@ Kafka:
         User:
         Password:
 # Version default to 0.10.2.0 if not specified
-    Version: 
+    Version: 2.3.0 
 
 # This controls the debugging options for the orderer
 Debug:

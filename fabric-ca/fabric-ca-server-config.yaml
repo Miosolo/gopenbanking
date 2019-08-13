@@ -242,11 +242,14 @@ ldap:
 # (like businessunit1, department1, businessunit2) that are specified in the configuration file,
 # which are always stored in lower case.
 #############################################################################
-affiliations: #TODO
-   org1:
+affiliations:
+   ANZBank:
       - department1
       - department2
-   org2:
+   CitiBank:
+      - department1
+      - department2
+   Supervisor:
       - department1
 
 #############################################################################
@@ -457,7 +460,7 @@ cfg:
 ###############################################################################
 operations:
     # host and port for the operations server
-    listenAddress: orderer.italktoyou.cn:8000
+    listenAddress: 0.0.0.0:7070
 
     # TLS configuration for the operations endpoint
     tls:
