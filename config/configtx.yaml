@@ -88,7 +88,7 @@ Capabilities:
 # Orderer tag includes specific information about orderer default settings
 Orderer: &OrdererDefaults
     
-    OrdererType: solo
+    OrdererType: kafka
     Addresses: 
         - orderer.italktoyou.cn:7050
     BatchTimeout: 2s
@@ -99,7 +99,7 @@ Orderer: &OrdererDefaults
     MaxChannels: 0
     Kafka:
         Brokers:
-            - 127.0.0.1:9092
+            - orderer.italktoyou.cn:9092
     Organizations:
     Policies:
         Readers:
