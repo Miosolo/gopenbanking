@@ -18,3 +18,5 @@ production/
 
 # logs
 *.log
+orderor/*.log
+config/*.log
