@@ -11,12 +11,17 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# exclude logs
-*.log
-
 # production
 production/
 *.block
+*tx
+
+#build prodections
 app/app
 chaincode/chaincode
 chaincode-security/chaincode-security
+
+# logs
+*.log
+orderor/*.log
+config/*.log

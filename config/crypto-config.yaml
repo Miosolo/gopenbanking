@@ -9,19 +9,19 @@ OrdererOrgs:
 
 # All the peers' names and domains
 PeerOrgs:
-    - Name: anz_bank
+    - Name: ANZBank
       Domain: anz.italktoyou.cn
       Template:
           Count: 1
       Users:
           Count: 4
-    - Name: citi_bank
+    - Name: CITIBank
       Domain: citi.italktoyou.cn
       Template:
           Count: 1
       Users:
           Count: 4
-    - Name: supervisor
+    - Name: Supervisor
       Domain: supervi.italktoyou.cn
       Template:
           Count: 1
