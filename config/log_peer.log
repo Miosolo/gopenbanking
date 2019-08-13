@@ -1,0 +1,322 @@
+[34m2019-08-12 07:09:31.142 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-12 07:09:31.142 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-12 07:09:31.142 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-12 07:09:31.172 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-12 07:09:31.211 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-12 07:09:31.212 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 07:09:31.212 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 07:09:31.212 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 07:09:31.212 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 07:09:31.213 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-12 07:09:31.214 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-12 07:09:31.215 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-12 07:09:31.215 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-12 07:09:31.215 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-12 07:09:31.215 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-12 07:09:31.217 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 07:09:31.221 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: 197b8a594e3ec0f15110ddff42987e060263ac14ddee8c6f85ba634b5cd32d66, Metadata: 
+[34m2019-08-12 07:09:31.221 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-12 07:09:31.222 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 07:09:31.222 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-12 07:09:31.222 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 07:09:31.222 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-12 07:09:31.222 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 07:09:31.222 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 07:09:31.222 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-12 07:09:31.223 CST [peer] Initialize -> INFO 01a[0m Loading chain orgschannel
+[34m2019-08-12 07:09:31.223 CST [ledgermgmt] OpenLedger -> INFO 01b[0m Opening ledger with id = orgschannel
+[34m2019-08-12 07:09:31.230 CST [ledgermgmt] OpenLedger -> INFO 01c[0m Opened ledger with id = orgschannel
+[34m2019-08-12 07:09:31.233 CST [gossip.gossip] JoinChan -> INFO 01d[0m Joining gossip network of channel orgschannel with 3 organizations
+[34m2019-08-12 07:09:31.233 CST [gossip.gossip] learnAnchorPeers -> INFO 01e[0m No configured anchor peers of CitiBankMSP for channel orgschannel to learn about
+[34m2019-08-12 07:09:31.233 CST [gossip.gossip] learnAnchorPeers -> INFO 01f[0m No configured anchor peers of SuperviMSP for channel orgschannel to learn about
+[34m2019-08-12 07:09:31.233 CST [gossip.gossip] learnAnchorPeers -> INFO 020[0m No configured anchor peers of ANZBankMSP for channel orgschannel to learn about
+[34m2019-08-12 07:09:31.242 CST [gossip.state] NewGossipStateProvider -> INFO 021[0m Updating metadata information, current ledger sequence is at = 0, next expected block is = 1
+[34m2019-08-12 07:09:31.243 CST [sccapi] deploySysCC -> INFO 022[0m system chaincode lscc/orgschannel(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 07:09:31.243 CST [cscc] Init -> INFO 023[0m Init CSCC
+[34m2019-08-12 07:09:31.243 CST [sccapi] deploySysCC -> INFO 024[0m system chaincode cscc/orgschannel(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 07:09:31.243 CST [qscc] Init -> INFO 025[0m Init QSCC
+[34m2019-08-12 07:09:31.243 CST [sccapi] deploySysCC -> INFO 026[0m system chaincode qscc/orgschannel(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 07:09:31.243 CST [sccapi] deploySysCC -> INFO 027[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 07:09:31.244 CST [discovery] NewService -> INFO 028[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-12 07:09:31.244 CST [nodeCmd] registerDiscoveryService -> INFO 029[0m Discovery service activated
+[34m2019-08-12 07:09:31.244 CST [nodeCmd] serve -> INFO 02a[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 07:09:31.245 CST [nodeCmd] serve -> INFO 02b[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 07:09:31.245 CST [kvledger] LoadPreResetHeight -> INFO 02c[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-12 07:09:31.245 CST [fsblkstorage] LoadPreResetHeight -> INFO 02d[0m Loading Pre-reset heights
+[34m2019-08-12 07:09:31.245 CST [fsblkstorage] preRestHtFiles -> INFO 02e[0m Found ledgers - [orgschannel]
+[34m2019-08-12 07:09:31.245 CST [fsblkstorage] LoadPreResetHeight -> INFO 02f[0m Pre-reset heights loaded
+[34m2019-08-12 21:23:18.621 CST [endorser] callChaincode -> INFO 030[0m [][f742830b] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:23:18.621 CST [endorser] callChaincode -> INFO 031[0m [][f742830b] Exit chaincode: name:"lscc"  (1ms)
+[31m2019-08-12 21:23:18.621 CST [endorser] ProcessProposal -> ERRO 032[0m [][f742830b] simulateProposal() resulted in chaincode name:"lscc"  response status 500 for txid: f742830b0433c804c80d148546aab94eec3d97e80bfec8296308842e3fd2eb5f
+[34m2019-08-12 21:23:18.622 CST [comm.grpc.server] 1 -> INFO 033[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46292 grpc.code=OK grpc.call_duration=2.652549ms
+[34m2019-08-12 21:24:32.494 CST [endorser] callChaincode -> INFO 034[0m [][6caab26b] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:24:32.499 CST [lscc] executeInstall -> INFO 035[0m Installed Chaincode [cc_gopenbanking] Version [1.0] to peer
+[34m2019-08-12 21:24:32.499 CST [endorser] callChaincode -> INFO 036[0m [][6caab26b] Exit chaincode: name:"lscc"  (5ms)
+[34m2019-08-12 21:24:32.499 CST [comm.grpc.server] 1 -> INFO 037[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46306 grpc.code=OK grpc.call_duration=6.565593ms
+[34m2019-08-12 21:38:44.237 CST [comm.grpc.server] 1 -> INFO 038[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46316 grpc.code=OK grpc.call_duration=1.241829ms
+[34m2019-08-12 21:40:42.845 CST [endorser] callChaincode -> INFO 039[0m [orgschannel][455795f6] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:40:42.874 CST [chaincode.platform.golang] GenerateDockerBuild -> INFO 03a[0m building chaincode with ldflagsOpt: '-ldflags "-linkmode external -extldflags '-static'"'
+[34m2019-08-12 21:40:52.217 CST [endorser] callChaincode -> INFO 03b[0m [orgschannel][455795f6] Exit chaincode: name:"lscc"  (9373ms)
+[31m2019-08-12 21:40:52.217 CST [endorser] SimulateProposal -> ERRO 03c[0m [orgschannel][455795f6] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 21:40:52.217 CST [comm.grpc.server] 1 -> INFO 03d[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46320 grpc.code=OK grpc.call_duration=9.373312088s
+[34m2019-08-12 21:45:40.219 CST [endorser] callChaincode -> INFO 03e[0m [orgschannel][da519194] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:45:40.626 CST [endorser] callChaincode -> INFO 03f[0m [orgschannel][da519194] Exit chaincode: name:"lscc"  (407ms)
+[31m2019-08-12 21:45:40.626 CST [endorser] SimulateProposal -> ERRO 040[0m [orgschannel][da519194] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 21:45:40.626 CST [comm.grpc.server] 1 -> INFO 041[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46326 grpc.code=OK grpc.call_duration=407.885849ms
+[34m2019-08-12 21:51:43.041 CST [endorser] callChaincode -> INFO 042[0m [orgschannel][60dcfa70] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:51:43.477 CST [endorser] callChaincode -> INFO 043[0m [orgschannel][60dcfa70] Exit chaincode: name:"lscc"  (436ms)
+[31m2019-08-12 21:51:43.477 CST [endorser] SimulateProposal -> ERRO 044[0m [orgschannel][60dcfa70] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 21:51:43.477 CST [comm.grpc.server] 1 -> INFO 045[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46332 grpc.code=OK grpc.call_duration=436.415764ms
+[34m2019-08-12 21:55:41.240 CST [endorser] callChaincode -> INFO 046[0m [][ad908955] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:55:41.245 CST [endorser] callChaincode -> INFO 047[0m [][ad908955] Exit chaincode: name:"lscc"  (5ms)
+[31m2019-08-12 21:55:41.245 CST [endorser] ProcessProposal -> ERRO 048[0m [][ad908955] simulateProposal() resulted in chaincode name:"lscc"  response status 500 for txid: ad908955e8bcaf45ce11ea70cbc040fdf6d19ebc5a70c1b06b5b7335e2b84e02
+[34m2019-08-12 21:55:41.246 CST [comm.grpc.server] 1 -> INFO 049[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46338 grpc.code=OK grpc.call_duration=6.794284ms
+[34m2019-08-12 21:57:37.977 CST [endorser] callChaincode -> INFO 04a[0m [][62c7e80c] Entry chaincode: name:"cscc" 
+[34m2019-08-12 21:57:37.978 CST [endorser] callChaincode -> INFO 04b[0m [][62c7e80c] Exit chaincode: name:"cscc"  (0ms)
+[34m2019-08-12 21:57:37.978 CST [comm.grpc.server] 1 -> INFO 04c[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46342 grpc.code=OK grpc.call_duration=922.112µs
+[34m2019-08-12 21:57:53.881 CST [endorser] callChaincode -> INFO 04d[0m [][2bfe52bd] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:57:53.886 CST [lscc] executeInstall -> INFO 04e[0m Installed Chaincode [cc_gopenbanking] Version [1.1] to peer
+[34m2019-08-12 21:57:53.886 CST [endorser] callChaincode -> INFO 04f[0m [][2bfe52bd] Exit chaincode: name:"lscc"  (5ms)
+[34m2019-08-12 21:57:53.886 CST [comm.grpc.server] 1 -> INFO 050[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46348 grpc.code=OK grpc.call_duration=6.017495ms
+[34m2019-08-12 21:58:08.187 CST [endorser] callChaincode -> INFO 051[0m [orgschannel][bec275fa] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:58:08.215 CST [chaincode.platform.golang] GenerateDockerBuild -> INFO 052[0m building chaincode with ldflagsOpt: '-ldflags "-linkmode external -extldflags '-static'"'
+[34m2019-08-12 21:58:17.468 CST [endorser] callChaincode -> INFO 053[0m [orgschannel][bec275fa] Exit chaincode: name:"lscc"  (9280ms)
+[31m2019-08-12 21:58:17.468 CST [endorser] SimulateProposal -> ERRO 054[0m [orgschannel][bec275fa] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 21:58:17.468 CST [comm.grpc.server] 1 -> INFO 055[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46352 grpc.code=OK grpc.call_duration=9.280811148s
+[34m2019-08-12 21:59:13.705 CST [endorser] callChaincode -> INFO 056[0m [orgschannel][c832d9cd] Entry chaincode: name:"lscc" 
+[34m2019-08-12 21:59:13.732 CST [chaincode.platform.golang] GenerateDockerBuild -> INFO 057[0m building chaincode with ldflagsOpt: '-ldflags "-linkmode external -extldflags '-static'"'
+[34m2019-08-12 21:59:23.006 CST [endorser] callChaincode -> INFO 058[0m [orgschannel][c832d9cd] Exit chaincode: name:"lscc"  (9302ms)
+[31m2019-08-12 21:59:23.006 CST [endorser] SimulateProposal -> ERRO 059[0m [orgschannel][c832d9cd] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 21:59:23.007 CST [comm.grpc.server] 1 -> INFO 05a[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46358 grpc.code=OK grpc.call_duration=9.302491756s
+[34m2019-08-12 22:11:39.579 CST [endorser] callChaincode -> INFO 05b[0m [orgschannel][1f0e2c76] Entry chaincode: name:"lscc" 
+[34m2019-08-12 22:11:39.999 CST [endorser] callChaincode -> INFO 05c[0m [orgschannel][1f0e2c76] Exit chaincode: name:"lscc"  (420ms)
+[31m2019-08-12 22:11:39.999 CST [endorser] SimulateProposal -> ERRO 05d[0m [orgschannel][1f0e2c76] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 22:11:40.000 CST [comm.grpc.server] 1 -> INFO 05e[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46370 grpc.code=OK grpc.call_duration=420.804517ms
+[34m2019-08-12 22:23:02.650 CST [nodeCmd] handleSignals -> INFO 05f[0m Received signal: 15 (terminated)
+[34m2019-08-12 22:23:02.650 CST [gossip.service] Stop -> INFO 060[0m Stopping chain orgschannel
+[34m2019-08-12 22:23:02.650 CST [gossip.gossip] Stop -> INFO 061[0m Stopping gossip
+[34m2019-08-12 22:23:02.650 CST [gossip.discovery] Stop -> INFO 062[0m Stopping
+[34m2019-08-12 22:23:02.650 CST [gossip.discovery] Stop -> INFO 063[0m Stopped
+[34m2019-08-12 22:23:02.650 CST [gossip.comm] Stop -> INFO 064[0m Stopping
+[34m2019-08-12 22:23:02.650 CST [gossip.comm] Stop -> INFO 065[0m Stopped
+[34m2019-08-12 22:30:49.667 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-12 22:30:49.667 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-12 22:30:49.667 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-12 22:30:49.688 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-12 22:30:49.729 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-12 22:30:49.729 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 22:30:49.729 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 22:30:49.729 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 22:30:49.729 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 22:30:49.730 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-12 22:30:49.731 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-12 22:30:49.732 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-12 22:30:49.732 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-12 22:30:49.733 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-12 22:30:49.733 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-12 22:30:49.734 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:30:49.738 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: 7a74f2c444a8dee37041ba730edfec3dc1decca677924d1f4523313c218ed10a, Metadata: 
+[34m2019-08-12 22:30:49.738 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-12 22:30:49.739 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 22:30:49.739 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-12 22:30:49.739 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 22:30:49.739 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-12 22:30:49.739 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 22:30:49.739 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 22:30:49.739 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-12 22:30:49.741 CST [peer] Initialize -> INFO 01a[0m Loading chain orgschannel
+[34m2019-08-12 22:30:49.741 CST [ledgermgmt] OpenLedger -> INFO 01b[0m Opening ledger with id = orgschannel
+[34m2019-08-12 22:30:49.746 CST [ledgermgmt] OpenLedger -> INFO 01c[0m Opened ledger with id = orgschannel
+[34m2019-08-12 22:30:49.750 CST [gossip.gossip] JoinChan -> INFO 01d[0m Joining gossip network of channel orgschannel with 3 organizations
+[34m2019-08-12 22:30:49.750 CST [gossip.gossip] learnAnchorPeers -> INFO 01e[0m No configured anchor peers of CitiBankMSP for channel orgschannel to learn about
+[34m2019-08-12 22:30:49.750 CST [gossip.gossip] learnAnchorPeers -> INFO 01f[0m No configured anchor peers of SuperviMSP for channel orgschannel to learn about
+[34m2019-08-12 22:30:49.750 CST [gossip.gossip] learnAnchorPeers -> INFO 020[0m No configured anchor peers of ANZBankMSP for channel orgschannel to learn about
+[34m2019-08-12 22:30:49.760 CST [gossip.state] NewGossipStateProvider -> INFO 021[0m Updating metadata information, current ledger sequence is at = 0, next expected block is = 1
+[34m2019-08-12 22:30:49.760 CST [sccapi] deploySysCC -> INFO 022[0m system chaincode lscc/orgschannel(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 22:30:49.760 CST [cscc] Init -> INFO 023[0m Init CSCC
+[34m2019-08-12 22:30:49.760 CST [sccapi] deploySysCC -> INFO 024[0m system chaincode cscc/orgschannel(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 22:30:49.760 CST [qscc] Init -> INFO 025[0m Init QSCC
+[34m2019-08-12 22:30:49.761 CST [sccapi] deploySysCC -> INFO 026[0m system chaincode qscc/orgschannel(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 22:30:49.761 CST [sccapi] deploySysCC -> INFO 027[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 22:30:49.761 CST [discovery.lifecycle] DeployedChaincodes -> INFO 028[0m Chaincode cc_gopenbanking isn't instantiated
+[34m2019-08-12 22:30:49.761 CST [discovery.lifecycle] DeployedChaincodes -> INFO 029[0m Chaincode cc_gopenbanking isn't instantiated
+[34m2019-08-12 22:30:49.761 CST [discovery] NewService -> INFO 02a[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-12 22:30:49.761 CST [nodeCmd] registerDiscoveryService -> INFO 02b[0m Discovery service activated
+[34m2019-08-12 22:30:49.761 CST [nodeCmd] serve -> INFO 02c[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:30:49.762 CST [nodeCmd] serve -> INFO 02d[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:30:49.762 CST [kvledger] LoadPreResetHeight -> INFO 02e[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-12 22:30:49.762 CST [fsblkstorage] LoadPreResetHeight -> INFO 02f[0m Loading Pre-reset heights
+[34m2019-08-12 22:30:49.762 CST [fsblkstorage] preRestHtFiles -> INFO 030[0m Found ledgers - [orgschannel]
+[34m2019-08-12 22:30:49.762 CST [fsblkstorage] LoadPreResetHeight -> INFO 031[0m Pre-reset heights loaded
+[34m2019-08-12 22:30:57.075 CST [endorser] callChaincode -> INFO 032[0m [orgschannel][0f2040dc] Entry chaincode: name:"lscc" 
+[34m2019-08-12 22:30:57.494 CST [endorser] callChaincode -> INFO 033[0m [orgschannel][0f2040dc] Exit chaincode: name:"lscc"  (419ms)
+[31m2019-08-12 22:30:57.494 CST [endorser] SimulateProposal -> ERRO 034[0m [orgschannel][0f2040dc] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 22:30:57.495 CST [comm.grpc.server] 1 -> INFO 035[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46386 grpc.code=OK grpc.call_duration=420.458502ms
+[34m2019-08-12 22:41:24.385 CST [nodeCmd] handleSignals -> INFO 036[0m Received signal: 15 (terminated)
+[34m2019-08-12 22:41:24.386 CST [gossip.service] Stop -> INFO 037[0m Stopping chain orgschannel
+[34m2019-08-12 22:41:24.386 CST [gossip.gossip] Stop -> INFO 038[0m Stopping gossip
+[34m2019-08-12 22:41:24.386 CST [gossip.discovery] Stop -> INFO 039[0m Stopping
+[34m2019-08-12 22:41:24.386 CST [gossip.discovery] Stop -> INFO 03a[0m Stopped
+[34m2019-08-12 22:41:24.386 CST [gossip.comm] Stop -> INFO 03b[0m Stopping
+[34m2019-08-12 22:41:24.386 CST [gossip.comm] Stop -> INFO 03c[0m Stopped
+[34m2019-08-12 22:52:28.214 CST [nodeCmd] serve -> INFO 001[0m Starting peer:
+ Version: 1.4.2
+ Commit SHA: c6cc550
+ Go version: go1.11.5
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Image Version: 0.4.15
+  Base Docker Namespace: hyperledger
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+[34m2019-08-12 22:52:28.215 CST [ledgermgmt] initialize -> INFO 002[0m Initializing ledger mgmt
+[34m2019-08-12 22:52:28.215 CST [kvledger] NewProvider -> INFO 003[0m Initializing ledger provider
+[34m2019-08-12 22:52:28.239 CST [kvledger] NewProvider -> INFO 004[0m ledger provider Initialized
+[34m2019-08-12 22:52:28.277 CST [ledgermgmt] initialize -> INFO 005[0m ledger mgmt initialized
+[34m2019-08-12 22:52:28.277 CST [peer] func1 -> INFO 006[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 22:52:28.278 CST [peer] func1 -> INFO 007[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 22:52:28.278 CST [peer] func1 -> INFO 008[0m Auto-detected peer address: 172.26.148.216:7051
+[34m2019-08-12 22:52:28.278 CST [peer] func1 -> INFO 009[0m Returning peer0.anz.italktoyou.cn:7051
+[34m2019-08-12 22:52:28.279 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00a[0m Entering computeChaincodeEndpoint with peerHostname: peer0.anz.italktoyou.cn
+[34m2019-08-12 22:52:28.279 CST [nodeCmd] computeChaincodeEndpoint -> INFO 00b[0m Exit with ccEndpoint: peer0.anz.italktoyou.cn:7052
+[34m2019-08-12 22:52:28.280 CST [sccapi] registerSysCC -> INFO 00c[0m system chaincode lscc(github.com/hyperledger/fabric/core/scc/lscc) registered
+[34m2019-08-12 22:52:28.280 CST [sccapi] registerSysCC -> INFO 00d[0m system chaincode cscc(github.com/hyperledger/fabric/core/scc/cscc) registered
+[34m2019-08-12 22:52:28.280 CST [sccapi] registerSysCC -> INFO 00e[0m system chaincode qscc(github.com/hyperledger/fabric/core/scc/qscc) registered
+[34m2019-08-12 22:52:28.281 CST [sccapi] registerSysCC -> INFO 00f[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle,true) disabled
+[34m2019-08-12 22:52:28.282 CST [gossip.service] func1 -> INFO 010[0m Initialize gossip with endpoint peer0.anz.italktoyou.cn:7051 and bootstrap set [peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:52:28.286 CST [gossip.gossip] NewGossipService -> INFO 011[0m Creating gossip service with self membership of Endpoint: peer0.anz.italktoyou.cn:7051, InternalEndpoint: peer0.anz.italktoyou.cn:7051, PKI-ID: 7a74f2c444a8dee37041ba730edfec3dc1decca677924d1f4523313c218ed10a, Metadata: 
+[34m2019-08-12 22:52:28.287 CST [gossip.gossip] start -> INFO 012[0m Gossip instance peer0.anz.italktoyou.cn:7051 started
+[34m2019-08-12 22:52:28.287 CST [sccapi] deploySysCC -> INFO 013[0m system chaincode lscc/(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 22:52:28.288 CST [cscc] Init -> INFO 014[0m Init CSCC
+[34m2019-08-12 22:52:28.288 CST [sccapi] deploySysCC -> INFO 015[0m system chaincode cscc/(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 22:52:28.288 CST [qscc] Init -> INFO 016[0m Init QSCC
+[34m2019-08-12 22:52:28.288 CST [sccapi] deploySysCC -> INFO 017[0m system chaincode qscc/(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 22:52:28.288 CST [sccapi] deploySysCC -> INFO 018[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 22:52:28.288 CST [nodeCmd] serve -> INFO 019[0m Deployed system chaincodes
+[34m2019-08-12 22:52:28.290 CST [peer] Initialize -> INFO 01a[0m Loading chain orgschannel
+[34m2019-08-12 22:52:28.290 CST [ledgermgmt] OpenLedger -> INFO 01b[0m Opening ledger with id = orgschannel
+[34m2019-08-12 22:52:28.295 CST [ledgermgmt] OpenLedger -> INFO 01c[0m Opened ledger with id = orgschannel
+[34m2019-08-12 22:52:28.298 CST [gossip.gossip] JoinChan -> INFO 01d[0m Joining gossip network of channel orgschannel with 3 organizations
+[34m2019-08-12 22:52:28.298 CST [gossip.gossip] learnAnchorPeers -> INFO 01e[0m No configured anchor peers of ANZBankMSP for channel orgschannel to learn about
+[34m2019-08-12 22:52:28.298 CST [gossip.gossip] learnAnchorPeers -> INFO 01f[0m No configured anchor peers of CitiBankMSP for channel orgschannel to learn about
+[34m2019-08-12 22:52:28.298 CST [gossip.gossip] learnAnchorPeers -> INFO 020[0m No configured anchor peers of SuperviMSP for channel orgschannel to learn about
+[34m2019-08-12 22:52:28.307 CST [gossip.state] NewGossipStateProvider -> INFO 021[0m Updating metadata information, current ledger sequence is at = 0, next expected block is = 1
+[34m2019-08-12 22:52:28.307 CST [sccapi] deploySysCC -> INFO 022[0m system chaincode lscc/orgschannel(github.com/hyperledger/fabric/core/scc/lscc) deployed
+[34m2019-08-12 22:52:28.308 CST [cscc] Init -> INFO 023[0m Init CSCC
+[34m2019-08-12 22:52:28.308 CST [sccapi] deploySysCC -> INFO 024[0m system chaincode cscc/orgschannel(github.com/hyperledger/fabric/core/scc/cscc) deployed
+[34m2019-08-12 22:52:28.308 CST [qscc] Init -> INFO 025[0m Init QSCC
+[34m2019-08-12 22:52:28.308 CST [sccapi] deploySysCC -> INFO 026[0m system chaincode qscc/orgschannel(github.com/hyperledger/fabric/core/scc/qscc) deployed
+[34m2019-08-12 22:52:28.308 CST [sccapi] deploySysCC -> INFO 027[0m system chaincode (+lifecycle,github.com/hyperledger/fabric/core/chaincode/lifecycle) disabled
+[34m2019-08-12 22:52:28.308 CST [discovery.lifecycle] DeployedChaincodes -> INFO 028[0m Chaincode cc_gopenbanking isn't instantiated
+[34m2019-08-12 22:52:28.308 CST [discovery.lifecycle] DeployedChaincodes -> INFO 029[0m Chaincode cc_gopenbanking isn't instantiated
+[34m2019-08-12 22:52:28.308 CST [discovery] NewService -> INFO 02a[0m Created with config TLS: false, authCacheMaxSize: 1000, authCachePurgeRatio: 0.750000
+[34m2019-08-12 22:52:28.308 CST [nodeCmd] registerDiscoveryService -> INFO 02b[0m Discovery service activated
+[34m2019-08-12 22:52:28.309 CST [nodeCmd] serve -> INFO 02c[0m Starting peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:52:28.309 CST [nodeCmd] serve -> INFO 02d[0m Started peer with ID=[name:"peer0.anz.italktoyou.cn" ], network ID=[dev], address=[peer0.anz.italktoyou.cn:7051]
+[34m2019-08-12 22:52:28.309 CST [kvledger] LoadPreResetHeight -> INFO 02e[0m Loading prereset height from path [/opt/hyperledger/gopenbanking/production/ledgersData/chains]
+[34m2019-08-12 22:52:28.309 CST [fsblkstorage] LoadPreResetHeight -> INFO 02f[0m Loading Pre-reset heights
+[34m2019-08-12 22:52:28.309 CST [fsblkstorage] preRestHtFiles -> INFO 030[0m Found ledgers - [orgschannel]
+[34m2019-08-12 22:52:28.309 CST [fsblkstorage] LoadPreResetHeight -> INFO 031[0m Pre-reset heights loaded
+[34m2019-08-12 22:54:15.310 CST [comm.grpc.server] 1 -> INFO 032[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46394 grpc.code=OK grpc.call_duration=1.247804ms
+[34m2019-08-12 22:54:35.422 CST [endorser] callChaincode -> INFO 033[0m [orgschannel][202afff5] Entry chaincode: name:"lscc" 
+[34m2019-08-12 22:54:35.836 CST [endorser] callChaincode -> INFO 034[0m [orgschannel][202afff5] Exit chaincode: name:"lscc"  (413ms)
+[31m2019-08-12 22:54:35.836 CST [endorser] SimulateProposal -> ERRO 035[0m [orgschannel][202afff5] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 22:54:35.836 CST [comm.grpc.server] 1 -> INFO 036[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46398 grpc.code=OK grpc.call_duration=414.113979ms
+[34m2019-08-12 22:58:50.636 CST [endorser] callChaincode -> INFO 037[0m [orgschannel][268c8206] Entry chaincode: name:"lscc" 
+[34m2019-08-12 22:58:51.108 CST [endorser] callChaincode -> INFO 038[0m [orgschannel][268c8206] Exit chaincode: name:"lscc"  (471ms)
+[31m2019-08-12 22:58:51.108 CST [endorser] SimulateProposal -> ERRO 039[0m [orgschannel][268c8206] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 22:58:51.108 CST [comm.grpc.server] 1 -> INFO 03a[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46404 grpc.code=OK grpc.call_duration=471.988483ms
+[33m2019-08-12 23:00:02.706 CST [protoutils] ValidateProposalMessage -> WARN 03b[0m channel [orgchannel]: MSP error: channel doesn't exist
+[34m2019-08-12 23:00:02.706 CST [comm.grpc.server] 1 -> INFO 03c[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46410 error="access denied: channel [orgchannel] creator org [ANZBankMSP]" grpc.code=Unknown grpc.call_duration=312.12µs
+[34m2019-08-12 23:00:27.843 CST [endorser] callChaincode -> INFO 03d[0m [orgschannel][33652bc0] Entry chaincode: name:"lscc" 
+[34m2019-08-12 23:00:28.257 CST [endorser] callChaincode -> INFO 03e[0m [orgschannel][33652bc0] Exit chaincode: name:"lscc"  (414ms)
+[31m2019-08-12 23:00:28.257 CST [endorser] SimulateProposal -> ERRO 03f[0m [orgschannel][33652bc0] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-12 23:00:28.257 CST [comm.grpc.server] 1 -> INFO 040[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46416 grpc.code=OK grpc.call_duration=414.2897ms
+[33m2019-08-13 08:46:12.161 CST [protoutils] ValidateProposalMessage -> WARN 041[0m channel [orgschannel]: MSP error: MSP ANZbankMSP is unknown
+[34m2019-08-13 08:46:12.162 CST [comm.grpc.server] 1 -> INFO 042[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46598 error="access denied: channel [orgschannel] creator org [ANZbankMSP]" grpc.code=Unknown grpc.call_duration=355.356µs
+[33m2019-08-13 08:46:33.299 CST [protoutils] ValidateProposalMessage -> WARN 043[0m channel [orgchannel]: MSP error: channel doesn't exist
+[34m2019-08-13 08:46:33.299 CST [comm.grpc.server] 1 -> INFO 044[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46604 error="access denied: channel [orgchannel] creator org [ANZbankMSP]" grpc.code=Unknown grpc.call_duration=371.298µs
+[34m2019-08-13 08:47:10.479 CST [endorser] callChaincode -> INFO 045[0m [orgschannel][75ed4a0a] Entry chaincode: name:"lscc" 
+[34m2019-08-13 08:47:10.914 CST [endorser] callChaincode -> INFO 046[0m [orgschannel][75ed4a0a] Exit chaincode: name:"lscc"  (435ms)
+[31m2019-08-13 08:47:10.914 CST [endorser] SimulateProposal -> ERRO 047[0m [orgschannel][75ed4a0a] failed to invoke chaincode name:"lscc" , error: container exited with 2
+github.com/hyperledger/fabric/core/chaincode.(*RuntimeLauncher).Launch.func1
+	/w/workspace/fabric-release-jobs-x86_64/gopath/src/github.com/hyperledger/fabric/core/chaincode/runtime_launcher.go:63
+runtime.goexit
+	/opt/go/go1.11.5.linux.amd64/src/runtime/asm_amd64.s:1333
+chaincode registration failed
+[34m2019-08-13 08:47:10.914 CST [comm.grpc.server] 1 -> INFO 048[0m unary call completed grpc.service=protos.Endorser grpc.method=ProcessProposal grpc.peer_address=39.100.140.24:46610 grpc.code=OK grpc.call_duration=435.528271ms
+[34m2019-08-13 08:54:05.163 CST [nodeCmd] handleSignals -> INFO 049[0m Received signal: 15 (terminated)
+[34m2019-08-13 08:54:05.163 CST [gossip.service] Stop -> INFO 04a[0m Stopping chain orgschannel
+[34m2019-08-13 08:54:05.163 CST [gossip.gossip] Stop -> INFO 04b[0m Stopping gossip
+[34m2019-08-13 08:54:05.163 CST [gossip.discovery] Stop -> INFO 04c[0m Stopping
+[34m2019-08-13 08:54:05.163 CST [gossip.discovery] Stop -> INFO 04d[0m Stopped
+[34m2019-08-13 08:54:05.163 CST [gossip.comm] Stop -> INFO 04e[0m Stopping
+[34m2019-08-13 08:54:05.164 CST [gossip.comm] Stop -> INFO 04f[0m Stopped

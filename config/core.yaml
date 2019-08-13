@@ -1,4 +1,13 @@
-# This file defines all the information and settings about peer node
+logging:
+    peer: debug
+    cauthdsl: warning
+    gossip: warning
+    ledger: info
+    msp: warning
+    policies: warning
+    grpc: error
+    format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
 peer:
     id: peer0.anz.italktoyou.cn
     networkId: dev
@@ -11,41 +20,40 @@ peer:
         minInterval: 60s
         client:
             interval: 60s
-            timeout: 20s
+            timeout: 60s
         deliveryClient:
             interval: 60s
             timeout: 20s
+
     gossip:
         bootstrap: peer0.anz.italktoyou.cn:7051
-        useLedgerElection: true
-        orgLedger: false
-        externalEndpoint: peer0.anz.italktoyou.cn:7051
+        useledgerElection: true
+        orgLeader: false
         membershipTrackerInterval: 5s
-        endpoint: 
-        maxBlockCountToStore: 500
+        endpoint:
+        maxBlockCountToStore: 100
         maxPropagationBurstLatency: 10ms
         maxPropagationBurstSize: 10
         propagateIterations: 1
         propagatePeerNum: 3
-        pullInterval: 4s
+        pullInterval: 3
         pullPeerNum: 3
         requestStateInfoInterval: 4s
         publishStateInfoInterval: 4s
-        stateInforetentionInterval:
+        stateInfoRetentionInterval:
         publishCertPeriod: 10s
-        skipBlockVerfication: false
+        skipBlockVerification: false
         dialTimeout: 3s
         connTimeout: 2s
-        recvBuffSize: 20
-        sendBuffSize: 200
         digestWaitTime: 1s
         requestWaitTime: 1500ms
         responseWaitTime: 2s
         aliveTimeInterval: 5s
         aliveExpirationTimeout: 25s
         reconnectInterval: 25s
+        externalEndpoint: peer0.anz.italktoyou.cn:7051
         election:
-            startupGracePeriod: 15s
+            startUpGracePeriod: 15s
             membershipSampleInterval: 1s
             leaderAliveThreshold: 10s
             leaderElectionDuration: 5s
@@ -56,9 +64,8 @@ peer:
             btlPullMargin: 10
             reconcileBatchSize: 10
             reconcileSleepInterval: 1m
-            reconciliationEnabled: true
-            skipPullingInvalidTransactionsDuringCommit: false
-        State:
+            skipPullingInvalidTransactionDruingCommit: false
+        state:
             enabled: true
             checkInterval: 10s
             responseTimeout: 3s
@@ -68,20 +75,21 @@ peer:
     tls:
         enabled: false
         clientAuthRequired: false
-        cert:
+        cert: 
             file: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/tls/server.crt
-        key:
+        key: 
             file: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/tls/server.key
         rootcert:
             file: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/tls/ca.crt
         clientRootCAs:
-            file: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/tls/ca.crt
+            files:
+              - tls/ca.crt
         clientKey:
             file:
         clientCert:
             file:
     authentication:
-        timewindow: 10m
+        timewindow: 15m
     fileSystemPath: /opt/hyperledger/gopenbanking/production
     BCCSP:
         Default: SW
@@ -100,44 +108,42 @@ peer:
                 KeyStore:
     mspConfigPath: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/msp
     localMspId: ANZBankMSP
-    client: 
-        connTimeout: 3s
+    client:
+        connTimetout: 3s
     deliveryclient:
         reconnectTotalTimeThreshold: 3600s
         connTimeout: 3s
         reConnectBackoffThreshold: 3600s
     localMspType: bccsp
-    profile: 
+    profile:
         enabled: false
-        listenAddress: 0.0.0.0:6060
+        listenAddress: 0.0.0.0:7070
     adminService:
-        listenAddress: 0.0.0.0:7051
     handlers:
         authFilters:
-            -
-                name: DefaultAuth
-            -
-                name: ExpirationCheck
+          -
+            name: DefaultAuth
+          -
+            name: ExpirationCheck
         decorators:
-            -
-                name: DefaultDecorator
+          -
+            name: DefaultDecorator
         endorsers:
-            escc:
-                name: DefaultEndorsement
-                library:
+          escc:
+            name: DefaultEndorsement
+            library:
         validators:
-            vscc:
-                name: DefaultValidation
-                library:
+          vscc:
+            name: DefaultValidation
+            library:
     validatorPoolSize:
     discovery:
         enabled: true
         authCacheEnabled: true
         authCacheMaxSize: 1000
-        authCachePurgeRetentionRatio: 0.75
-        orgMemberAllowedAccess: false
+        aurthCachePurgeRetentionRatio: 0.75
+        orgMembersAllowedAccess: false
 
-# vm seciton defines all the environment for compiling and pruducing
 vm: 
     endpoint: unix://var/run/docker.sock
     docker:
@@ -149,7 +155,7 @@ vm:
                 file: docker/tls.crt
             key:
                 file: docker/tls.key
-        attchStdout: false
+        attachStdout: false
         hostConfig:
             NetworkMode: host
             Dns:
@@ -158,28 +164,27 @@ vm:
                 Config:
                     max-size: "50m"
                     max-file: "5"
-            Memory: 2147483548
+            Memory: 2147483648
 
-# chaincode section
 chaincode:
     id:
         path:
-        name: 
+        name:
     builder: $(DOCKER_NS)/fabric-ccenv:latest
-    pull: false
-    golang:
-        runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
+    pull: true
+    golang: 
+        runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH_-$(BASE_VERSION)
         dynamicLink: false
     car:
         runtime: $(BASE_DOCKER_NS)/fabric-baseos:$(ARCH)-$(BASE_VERSION)
     java:
         runtime: $(DOCKER_NS)/fabric-javaenv:$(ARCH)-$(PROJECT_VERSION)
     node:
-        runtime: $(BASE_DOCKER_NS)/farci-baseimage:$(ARCH)-$(BASE_VERSION)
+        runtime: $(BASE_DOCKER_NS)/fabric-baseimage:$(ARCH)-$(BASE_VERSION)
     startuptimeout: 300s
     executetimeout: 30s
     mode: net
-    keepalive: 0
+    keepaive: 0
     system:
         cscc: enable
         lscc: enable
@@ -190,7 +195,7 @@ chaincode:
     logging:
         level: info
         shim: warning
-        format: '%{color}%{time:2005-01-02 15:03:05.000 MST} [%{module}] %{shortfun} -> %{level:.4s} %id:03x}%{color:reset} %{message}'
+        foramt: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
 
 ledger:
     blockchain:
@@ -199,34 +204,34 @@ ledger:
         totalQueryLimit: 100000
         couchDBConfig:
             couchDBAddress: 127.0.0.1:5984
-            username:
-            password:
-            maxRetries: 3
-            maxRetriesOnStartup: 12
-            requestTimeout: 35s
-            internalQueryLimit: 1000
-            maxBatchUpdateSize: 1000
-            warmIndexAfterNBlocks: 1
-            createGlobalChangesDB: false
+        username: 
+        password:
+        maxRetries: 3
+        maxRetriesOnStartup: 12
+        requestTimeout: 35s
+        internalQueryLimit: 1000
+        maxBatchUpdateSize: 1000
+        warmIndexesafterNBlocks: 1
+        createGlobalChangeDB: false
     history:
         enableHistoryDatabase: true
 
 operations:
-    listenAddress: 0.0.0.0:9443
+    listenAddress: 127.0.0.1:9443
     tls:
         enabled: false
-        cert: 
-            file: 
+        cert:
+            file:
         key:
             file:
         clientAuthRequired: false
         clientRootCAs:
             files: []
 
-metrics:
+metrics: 
     provider: disabled
     statsd:
         network: udp
-        address: peer0.anz.italktoyou.cn
+        address: 127.0.0.1:8125
         writeInterval: 10s
         prefix:
