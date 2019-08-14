@@ -76,7 +76,7 @@ func main() {
   flag.Parse()
 
   // set env for YAML parsing
-  os.Setenv("FABRIC_CRYPTOCONFIG_PATH", os.Getenv("PWD")+"/crypto-config/"+*orgID)
+  os.Setenv("FABRIC_CRYPTOCONFIG_PATH", os.Getenv("PWD")+"/../crypto-config/")
   os.Setenv("FABRIC_ORG_ID", *orgID)
   os.Setenv("FABRIC_ORG_USER", *orgUser)
 

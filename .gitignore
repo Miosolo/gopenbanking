@@ -14,12 +14,12 @@
 fabric-ca/fabric-ca-server.db
 cc_gopenbanking
 
-# production
+# blockchain production
 production/
 *.block
-*tx
+*.tx
 
-#build prodections
+#build production
 app/app
 chaincode/chaincode
 chaincode-security/chaincode-security
