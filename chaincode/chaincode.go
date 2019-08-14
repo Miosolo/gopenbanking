@@ -33,10 +33,12 @@ type SimpleAsset struct {
 func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	// Get the args from the transaction proposal
 	function, args := stub.GetFunctionAndParameters()
+	//the first argument is in the variable "function"
 	if function != "init" {
 		log.Error("The first parameter needs to be a string: \"init\"")
 		return shim.Error("The first parameter needs to be a string: \"init\"")
 	}
+	//If the number of the rest arguments is not 2, it reveals that input is wrong.
 	if len(args) != 2 {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
@@ -62,7 +64,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		}
 		return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
 	} else {
-		return shim.Error("You do not have authority to access this function.")
+		return shim.Error(fmt.Sprintf("You do not have authority to access this function. With mspid: %s", mspid))
 	}
 
 }
@@ -87,14 +89,14 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Get client MSPID failed! With error: %s", err))
 	}
-
-	if mspid == "SuperMSP" {
+	// the supervisor can only be access to query the history transfer transaction.
+	if mspid == "SuperviMSP" {
 		if fn == "query" {
 			result, err = query(stub, args)
 		} else {
-			return shim.Error("you have no authority to access those data.")
+			return shim.Error(fmt.Sprintf("you have no authority to access those data. With mspid: %s", mspid))
 		}
-	} else {
+	} else { // the ANZBank and the CitiBank have the jurisdiction of accessing all the functions.
 		if fn == "get" {
 			result, err = get(stub, args)
 		} else if fn == "add" {
@@ -122,7 +124,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 }
 
 // Get returns the value of the specified asset key
-// When we need to query the remaining balance, we use this function.
+// When we need to get the remaining balance, we use this function.
 func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 1 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name.")
@@ -136,7 +138,6 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Asset not found: %s", args[0])
 	}
 
-	//set the output string's color to be green.
 	return fmt.Sprintf(" Account: %s; Balance: %s", args[0], string(value)), nil
 }
 
@@ -186,7 +187,7 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
 	}
-	//
+
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
@@ -204,7 +205,9 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
 }
 
-// create an account of ledger, args[0] means the account ID, args[1] means the account initial value.
+// The function of this module is to create an account of ledger
+// args[0] means the account ID
+// args[1] means the account initial value.
 func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an unique account name and an initial balance value.")
@@ -229,7 +232,8 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
 }
 
-// delete an account of ledger. args[0] represents the account ID.
+// delete an account of ledger.
+// args[0] represents the account ID.
 func delete(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 1 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account being deleted.")
@@ -243,7 +247,9 @@ func delete(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return fmt.Sprintf("Delete is success! Account: %s", args[0]), nil
 }
 
-// args[0] represents the debit account, args[1] represents the credit account, args[2] represents the money.
+// args[0] represents the debit account
+// args[1] represents the credit account
+// args[2] represents the money.
 // transfer the money from the debit account to the credit account.
 func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 3 {
@@ -267,13 +273,21 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed!"))
 	}
-
+	// store the transfer record into the database
+	// "out" means the money go out from one's account,
+	// so the organization of the key-value pair is:
+	// Key is a composite key, its sequence is ["out"debit account] [credit account] [uuid] [time]
+	// value is the amount of money been transfered.
 	msg, err := CreateHistoryKey(stub, args, "out")
 	if err != nil {
 		return "", fmt.Errorf("Create history records failed! with error: %s", err)
 	}
 	log.Info(msg)
-
+	// store the transfer record into the database
+	// "in" means the money go into one's account,
+	// so the organization of the key-value pair is:
+	// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
+	// value is the amount of money been transfered.
 	msg, err = CreateHistoryKey(stub, args, "in")
 	if err != nil {
 		return "", fmt.Errorf("Create history records failed! with error: %s", err)
@@ -283,14 +297,22 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return fmt.Sprintf("Transfer is success!"), nil
 }
 
-// create history transfer records
+// create history transferring records
+// "out" means the money go out from one's account,
+// "in" means the money go into one's account,
+// both "out" and "in" is tags, they emphasize on going out or in records
 func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first string) (string, error) {
+	// get the time of the transaction been finished.
 	FormatTime, err := stub.GetTxTimestamp()
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Get transaction timestamp failed!"))
 	}
 	tm := time.Unix(FormatTime.Seconds, 0)
 
+	// if we need to create an "out" record
+	// the organization of the key-value pair is:
+	// Key is a composite key, its sequence is ["out"debit account] [credit account] [uuid] [time]
+	// value is the amount of money been transfered.
 	if first == "out" {
 		historyKey, err := stub.CreateCompositeKey(first, []string{
 			args[0],
@@ -311,6 +333,9 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 		}
 
 	} else if first == "in" {
+		// so the organization of the key-value pair is:
+		// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
+		// value is the amount of money been transfered.
 		historyKey, err := stub.CreateCompositeKey(first, []string{
 			args[1],
 			"\t",
@@ -333,7 +358,12 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 	return fmt.Sprintf("Insert records success!"), nil
 }
 
-// query for the history. args[0] represents the objectType
+// query for the transferring history.
+// args[0] represents the objectType, that is, "in" or "out"
+// the variable "objectType" will store with the first argument of the composite key as one string.
+// for example, if we store "Yongmao", "Songyue", "1", "10:01:10" with objectType "in",
+// actually the string will be: inYongmao Songyue 1 10:01:10,
+// every space is the seperator of each string.
 // args[1] represents the account name
 func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
@@ -341,6 +371,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 	var PCKey []string = make([]string, 1)
 	PCKey[0] = args[1]
+	// when we intend to get the record
 	it, err := stub.GetStateByPartialCompositeKey(args[0], PCKey)
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key!"))

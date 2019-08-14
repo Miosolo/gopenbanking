@@ -1,3 +1,7 @@
+// this file is used to have unit test of chaincode
+// however, due to the difficulty of adding msp information in mockStub,
+// the real unit test file can function in the version that do not have
+// authority control.
 package chaincodeSecurity
 
 import (
