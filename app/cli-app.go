@@ -16,7 +16,7 @@ const (
   configPath = "./config.yaml"
 )
 
-//identify() inject the roles into the context
+//identify() checks the user identity
 func identify(sdk *fabsdk.FabricSDK, orgID, orgUser string) (err error) {
   mspClient, err := clientmsp.New(sdk.Context(), clientmsp.WithOrg(orgID))
   if err != nil {
@@ -29,7 +29,7 @@ func identify(sdk *fabsdk.FabricSDK, orgID, orgUser string) (err error) {
     return err
   }
 
-  log.Println("Identify is found: " + identity.Identifier().MSPID)
+  log.Println("Identity is found: " + identity.Identifier().MSPID)
   return nil
 }
 
@@ -94,7 +94,7 @@ func main() {
     log.Fatalf("identify %s fail: %s\n", *orgUser, err.Error())
   }
 
-  // print the instructions // TODO
+  // print the instructions
   fmt.Println(`==========INSTRUCTIONS==========
 Functions and parameters of the ANZ-CITI Banking Network:
   - (Bank) "get" + account
