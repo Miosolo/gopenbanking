@@ -261,7 +261,7 @@ organizations:
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     cryptoPath: peerOrganizations/anz.italktoyou.cn/users/{username}@anz.italktoyou.cn/msp
     peers:
-      - peer0.anz.italktoyou.cn
+      - peer0.anz.italktoyou.cn:7051
     
   # the profile will contain public information about organizations other than the one it belongs to.
   # These are necessary information to make transaction lifecycles work, including MSP IDs and
@@ -273,14 +273,14 @@ organizations:
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     cryptoPath:  peerOrganizations/citi.italktoyou.cn/msp
     peers:
-      - peer0.citi.italktoyou.cn
+      - peer0.citi.italktoyou.cn:7051
   
   Supervisor:
-    mspid: SuperMSP
+    mspid: SuperviMSP
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     cryptoPath:  peerOrganizations/supervi.italktoyou.cn/msp
     peers:
-      - peer0.supervi.italktoyou.cn
+      - peer0.supervi.italktoyou.cn:7051
 
   # Orderer Org name
   OrdererOrg:
