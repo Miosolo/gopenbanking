@@ -1,4 +1,4 @@
-package main
+package chaincodeSecurity
 
 import (
 	"fmt"
@@ -40,6 +40,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
+	// get clientIdentity of the one who calls the chaincode
 
 	// Set up any variables or assets here by calling stub.PutState()
 	// We store the key and the value on the ledger
@@ -176,9 +177,18 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an unique account name and an initial balance value.")
 	}
 
+	var name []byte
+	name, err := stub.GetState(args[0])
+	if name != nil {
+		return "", fmt.Errorf(fmt.Sprintf("The account has already existed!"))
+	}
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Failed to get access to asset: %s; With error: %s", args[0], err))
+	}
+
 	// Set up any variables or assets here by calling stub.PutState()
 	// We store the key and the value on the ledger
-	err := stub.PutState(args[0], []byte(args[1]))
+	err = stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
@@ -197,7 +207,7 @@ func delete(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Failed to delete asset: %s with error: %s", args[0], err)
 	}
 
-	return "Delete" + args[0] + "is success!", nil
+	return fmt.Sprintf("Delete is success! Account: %s", args[0]), nil
 }
 
 // args[0] represents the debit account, args[1] represents the credit account, args[2] represents the money.
