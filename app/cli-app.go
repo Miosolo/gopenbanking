@@ -68,17 +68,34 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
 }
 
 func main() {
+  // init the org-domain map
+  domainMap := make(map[string]string)
+  domainMap["ANZBank"] = "anz.italktoyou.cn"
+  domainMap["CitiBank"] = "citi.italktoyou.cn"
+  domainMap["Supervisor"] = "supervi.italktoyou.cn"
+
+
   // define the flags & parse the params
   channelID := flag.String("chan", "orgchannel", `Name of the channel`)
-  orgID := flag.String("org", "ANZBank", "Name of your orgnization")
-  orgUser := flag.String("user", "Admin", `Your User ID in this organization`)
+  orgID := flag.String("org", "", "Name of your orgnization")
+  orgUser := flag.String("user", "", `Your User ID in this organization`)
   chaincodeID := flag.String("cc", "", "ID of the chaincode instanciated")
   flag.Parse()
 
   // set env for YAML parsing
-  os.Setenv("FABRIC_CRYPTOCONFIG_PATH", os.Getenv("PWD")+"/../crypto-config/")
-  os.Setenv("FABRIC_ORG_ID", *orgID)
-  os.Setenv("FABRIC_ORG_USER", *orgUser)
+  os.Setenv("FABRIC_CRYPTOCONFIG_ROOT", os.Getenv("PWD")+"/../crypto-config")
+  if domain, ok := domainMap[*orgID]; ok {
+    os.Setenv("FABRIC_CRYPTOCONFIG_USER", 
+      os.Getenv("FABRIC_CRYPTOCONFIG_ROOT")+"/peerOrganizations/"+
+      domain+"/users/"+*orgUser+"@"+domain+"/msp/")
+    //os.Setenv("FABRIC_CRYPTOCONFIG_USER", "/home/miosolo/go/src/github.com/Miosolo/gopenbanking/app/userwise-crypto-config/ANZBank/Admin/msp/")
+    //os.Setenv("FABRIC_CRYPTOCONFIG_USER", os.Getenv("PWD")+"/userwise-crypto-config/"+*orgID+"/"+*orgUser+"/msp/")
+    os.Setenv("FABRIC_ORG_ID", *orgID)
+  } else {
+    log.Fatalln("Invalid organization")
+  }
+
+
 
   // init the env
   configProvider := config.FromFile(configPath)

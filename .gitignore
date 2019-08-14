@@ -26,5 +26,7 @@ chaincode-security/chaincode-security
 
 # logs
 *.log
-orderor/*.log
-config/*.log
+
+
+# backup files
+*.bak
