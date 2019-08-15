@@ -250,7 +250,13 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
 
-	return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
+	value, err := stub.GetState(args[0])
+	if value != nil {
+		return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
+	} else {
+		return "", fmt.Errorf(fmt.Sprintf("PutState failed!"))
+	}
+
 }
 
 // delete an account of ledger.
