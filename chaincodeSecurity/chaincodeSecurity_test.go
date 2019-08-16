@@ -15,8 +15,11 @@ func TestChaincode(t *testing.T) {
 	cc := new(SimpleAsset)
 	stub := shim.NewMockStub("test", cc)
 
-	res := stub.MockInit("1", [][]byte{[]byte("init"), []byte("Yongmao"), []byte("100")})
-	fmt.Println("init Yongmao result: ", string(res.Payload))
+	res := stub.MockInit("1", [][]byte{[]byte("init")})
+	fmt.Println("Init result: ", string(res.Payload))
+
+	res = stub.MockInvoke("1", [][]byte{[]byte("create"), []byte("Yongmao"), []byte("0")})
+	fmt.Println("create Yongmao result: ", string(res.Payload))
 
 	res = stub.MockInvoke("1", [][]byte{[]byte("add"), []byte("Yongmao"), []byte("10")})
 	fmt.Println("add Yongmao result: ", string(res.Payload))
@@ -33,8 +36,17 @@ func TestChaincode(t *testing.T) {
 	res = stub.MockInvoke("1", [][]byte{[]byte("create"), []byte("Songyue"), []byte("10")})
 	fmt.Println("create Songyue result: ", string(res.Payload))
 
+	res = stub.MockInvoke("1", [][]byte{[]byte("transfer"), []byte("Yongmao"), []byte("Songyue"), []byte("10")})
+	fmt.Println("transfer Yongmao Songyue result: ", string(res.Payload))
+
 	res = stub.MockInvoke("1", [][]byte{[]byte("get"), []byte("Songyue")})
 	fmt.Println("get Songyue result: ", string(res.Payload))
+
+	res = stub.MockInvoke("1", [][]byte{[]byte("get"), []byte("Yongmao")})
+	fmt.Println("get Yongmao result: ", string(res.Payload))
+
+	res = stub.MockInvoke("1", [][]byte{[]byte("add"), []byte("Yongmao"), []byte("100")})
+	fmt.Println("add Yongmao result: ", string(res.Payload))
 
 	res = stub.MockInvoke("1", [][]byte{[]byte("transfer"), []byte("Yongmao"), []byte("Songyue"), []byte("10")})
 	fmt.Println("transfer Yongmao Songyue result: ", string(res.Payload))

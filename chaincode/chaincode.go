@@ -97,7 +97,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		} else if fn == "RollBack" {
 			result, err = RollBack(stub, args)
 		} else {
-			return shim.Error(fmt.Sprintf("you have no authority to access those data. With mspid: %s", mspid))
+			return shim.Error(fmt.Sprintf("you have no authority to use other functions. With mspid: %s", mspid))
 		}
 	} else { // the ANZBank and the CitiBank have the jurisdiction of accessing all the functions.
 		if fn == "get" {
@@ -114,6 +114,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 			result, err = transfer(stub, args)
 		} else if fn == "query" {
 			result, err = query(stub, args)
+		} else {
+			return shim.Error("You do not have authority to use other functions.")
 		}
 	}
 
@@ -178,9 +180,9 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	if (intValueTemp + intArgs1) == intNowValueTemp {
-		return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
+		return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
 	} else {
-		return "", fmt.Errorf(fmt.Sprintf("Reduce failed! Error: database do not have correct number!"))
+		return "", fmt.Errorf(fmt.Sprintf("Add failed! Error: database do not have correct number!"))
 	}
 }
 

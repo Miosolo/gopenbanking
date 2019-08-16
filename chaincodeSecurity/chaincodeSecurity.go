@@ -37,7 +37,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		log.Error("The first parameter needs to be a string: \"init\"")
 		return shim.Error("The first parameter needs to be a string: \"init\"")
 	}
-	if len(args) != 2 {
+	if len(args) != 0 {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
@@ -45,12 +45,8 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
 	// Set up any variables or assets here by calling stub.PutState()
 	// We store the key and the value on the ledger
-	err := stub.PutState(args[0], []byte(args[1]))
-	if err != nil {
-		log.Debug(fmt.Sprintf("not found orgAttribute"))
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
-	}
-	return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+
+	return shim.Success([]byte(fmt.Sprintf("Success to initialize!")))
 
 }
 
@@ -144,9 +140,9 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	if (intValueTemp + intArgs1) == intNowValueTemp {
-		return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
+		return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
 	} else {
-		return "", fmt.Errorf(fmt.Sprintf("Reduce failed! Error: database do not have correct number!"))
+		return "", fmt.Errorf(fmt.Sprintf("Add failed! Error: database do not have correct number!"))
 	}
 }
 
