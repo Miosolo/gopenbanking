@@ -1,6 +1,7 @@
 # TEST METHODS
 ## unit test
-### If you want to have unit test, please type "go test" under the catalogue of original file and test file in command line.
+### 1. If you want to have unit test, please type "go test" under the catalogue of original file and test file in command line.
+### 2. "go test -cover -covermode count -coverprofile ./cover.out" can run unit test while get the cover rate of unit test.
 
 ## Benchmark test
 ### 1. Type "go test -bench=. -benchmem" will run all benchmark with unit test.
