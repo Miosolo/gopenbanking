@@ -178,7 +178,7 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	if (intValueTemp + intArgs1) == intNowValueTemp {
-		return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
+		return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
 	} else {
 		return "", fmt.Errorf(fmt.Sprintf("Reduce failed! Error: database do not have correct number!"))
 	}

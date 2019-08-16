@@ -19,10 +19,10 @@ func TestChaincode(t *testing.T) {
 	fmt.Println("init Yongmao result: ", string(res.Payload))
 
 	res = stub.MockInvoke("1", [][]byte{[]byte("add"), []byte("Yongmao"), []byte("10")})
-	fmt.Println("create Songyue result: ", string(res.Payload))
+	fmt.Println("add Yongmao result: ", string(res.Payload))
 
 	res = stub.MockInvoke("1", [][]byte{[]byte("reduce"), []byte("Yongmao"), []byte("10")})
-	fmt.Println("create Songyue result: ", string(res.Payload))
+	fmt.Println("reduce Yongmao result: ", string(res.Payload))
 
 	res = stub.MockInvoke("1", [][]byte{[]byte("create"), []byte("Songyue"), []byte("0")})
 	fmt.Println("create Songyue result: ", string(res.Payload))
