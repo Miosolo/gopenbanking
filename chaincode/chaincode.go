@@ -39,8 +39,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		log.Error("The first parameter needs to be a string: \"init\"")
 		return shim.Error("The first parameter needs to be a string: \"init\"")
 	}
-	//If the number of the rest arguments is not 2, it reveals that input is wrong.
-	if len(args) != 2 {
+	if len(args) != 0 {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
@@ -54,18 +53,11 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Get client MSPID failed! With error: %s", err))
 	}
-	// only can ANZBank be access to init function.
+
 	if mspid == "ANZBankMSP" {
-		// Set up any variables or assets here by calling stub.PutState()
-		// We store the key and the value on the ledger
-		err = stub.PutState(args[0], []byte(args[1]))
-		if err != nil {
-			log.Debug(fmt.Sprintf("not found orgAttribute"))
-			return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
-		}
-		return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+		return shim.Success([]byte(fmt.Sprintf("Success to initialize!")))
 	} else {
-		return shim.Error(fmt.Sprintf("You do not have authority to access this function. With mspid: %s", mspid))
+		return shim.Error("You do not have authority to get access to this function!")
 	}
 
 }
@@ -90,16 +82,16 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Get client MSPID failed! With error: %s", err))
 	}
-	// the supervisor can only be access to query the history transfer transaction.
+
 	if mspid == "SuperviMSP" {
 		if fn == "query" {
 			result, err = query(stub, args)
 		} else if fn == "RollBack" {
 			result, err = RollBack(stub, args)
 		} else {
-			return shim.Error(fmt.Sprintf("you have no authority to use other functions. With mspid: %s", mspid))
+			return shim.Error("You do not have authority to get access to this function!")
 		}
-	} else { // the ANZBank and the CitiBank have the jurisdiction of accessing all the functions.
+	} else {
 		if fn == "get" {
 			result, err = get(stub, args)
 		} else if fn == "add" {
@@ -114,8 +106,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 			result, err = transfer(stub, args)
 		} else if fn == "query" {
 			result, err = query(stub, args)
-		} else {
-			return shim.Error("You do not have authority to use other functions.")
+		} else if fn == "RollBack" {
+			result, err = RollBack(stub, args)
 		}
 	}
 
@@ -129,7 +121,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 }
 
 // Get returns the value of the specified asset key
-// When we need to get the remaining balance, we use this function.
+// When we need to query the remaining balance, we use this function.
 func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 1 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting an account name.")
@@ -202,7 +194,7 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
 	}
-
+	//
 	intValueTemp, err := strconv.Atoi(string(valueTemp))
 	if err != nil {
 		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
@@ -228,7 +220,6 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	} else {
 		return "", fmt.Errorf(fmt.Sprintf("Reduce failed! Error: database do not have correct number!"))
 	}
-
 }
 
 // The function of this module is to create an account of ledger
@@ -254,7 +245,7 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
-
+	//check if create function have done successfully.
 	value, err := stub.GetState(args[0])
 	if value != nil {
 		return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
@@ -294,7 +285,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	argsD[1] = args[2]
 	_, err := reduce(stub, argsD)
 	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("Reduce debit account failed! With error: %s", err))
+		return "", fmt.Errorf(fmt.Sprintf("Reduce debit account failed!"))
 	}
 
 	//add money to the cebit account.
@@ -303,7 +294,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	argsC[1] = args[2]
 	_, err = add(stub, argsC)
 	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed! With error: %s", err))
+		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed!"))
 	}
 	// store the transfer record into the database
 	// "out" means the money go out from one's account,
@@ -403,7 +394,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 	var PCKey []string = make([]string, 1)
 	PCKey[0] = args[1]
-	// when we intend to get the record
+	// intend to get the record of transferring
 	it, err := stub.GetStateByPartialCompositeKey(args[0], PCKey)
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key!"))
@@ -426,6 +417,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	} else {
 		return fmt.Sprintf("Query success! The result is:\n %s", result), nil
 	}
+
 }
 
 // the supervisor can rollback the transferring operation
@@ -504,8 +496,8 @@ func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	queryOut[1] = args[0]
 
 	result, err := query(stub, queryOut)
-	if result != "" || err.Error() != "Do not have any records!" {
-		return "", fmt.Errorf("RollBack failed during examination! The out record is not deleted!")
+	if (result != "") || (err.Error() != "Do not have any records!") {
+		return "", fmt.Errorf("RollBack failed during examination! The out record is not deleted! With result: %s; error: %s", result, err)
 	}
 
 	var queryIn []string = make([]string, 2)
