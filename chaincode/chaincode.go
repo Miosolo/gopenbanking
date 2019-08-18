@@ -165,17 +165,8 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Failed to set asset: %s with error: %s", args[0], err)
 	}
 
-	nowValueTemp, err := stub.GetState(args[0])
-	intNowValueTemp, err := strconv.Atoi(string(nowValueTemp))
-	if err != nil {
-		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
-	}
+	return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
 
-	if (intValueTemp + intArgs1) == intNowValueTemp {
-		return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
-	} else {
-		return "", fmt.Errorf(fmt.Sprintf("Add failed! Error: database do not have correct number!"))
-	}
 }
 
 // args[0] represents account, args[1] represents money.
@@ -209,17 +200,8 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Failed to set asset: %s;  With Error: %s", args[0], err)
 	}
 
-	nowValueTemp, err := stub.GetState(args[0])
-	intNowValueTemp, err := strconv.Atoi(string(nowValueTemp))
-	if err != nil {
-		return "", fmt.Errorf("Atoi fail! With Error: %s", err)
-	}
+	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
 
-	if (intValueTemp - intArgs1) == intNowValueTemp {
-		return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
-	} else {
-		return "", fmt.Errorf(fmt.Sprintf("Reduce failed! Error: database do not have correct number!"))
-	}
 }
 
 // The function of this module is to create an account of ledger
@@ -245,13 +227,8 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf(fmt.Sprintf("Failed to create asset: %s; With Error: %s", args[0], err))
 	}
-	//check if create function have done successfully.
-	value, err := stub.GetState(args[0])
-	if value != nil {
-		return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
-	} else {
-		return "", fmt.Errorf(fmt.Sprintf("PutState failed!"))
-	}
+
+	return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
 
 }
 
