@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/op/go-logging"
@@ -36,7 +37,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 		log.Error("The first parameter needs to be a string: \"init\"")
 		return shim.Error("The first parameter needs to be a string: \"init\"")
 	}
-	if len(args) != 2 {
+	if len(args) != 0 {
 		log.Error("Incorrect arguments. Expecting an account name and a balance value")
 		return shim.Error("Incorrect arguments. Expecting an account name and a balance value")
 	}
@@ -44,12 +45,8 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
 	// Set up any variables or assets here by calling stub.PutState()
 	// We store the key and the value on the ledger
-	err := stub.PutState(args[0], []byte(args[1]))
-	if err != nil {
-		log.Debug(fmt.Sprintf("not found orgAttribute"))
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
-	}
-	return shim.Success([]byte(fmt.Sprintf("Success to create one account! Account: %s; value: %s", args[0], args[1])))
+
+	return shim.Success([]byte(fmt.Sprintf("Success to initialize!")))
 
 }
 
@@ -77,6 +74,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		result, err = transfer(stub, args)
 	} else if fn == "query" {
 		result, err = query(stub, args)
+	} else if fn == "RollBack" {
+		result, err = RollBack(stub, args)
 	}
 
 	if err != nil {
@@ -134,7 +133,8 @@ func add(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Failed to set asset: %s with error: %s", args[0], err)
 	}
 
-	return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intArgs1+intValueTemp), nil
+	return fmt.Sprintf("Add is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp+intArgs1), nil
+
 }
 
 // args[0] represents account, args[1] represents money.
@@ -169,6 +169,7 @@ func reduce(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	return fmt.Sprintf("Reduce is success! Account: %s; Remaining balance is: %d", args[0], intValueTemp-intArgs1), nil
+
 }
 
 // create an account of ledger, args[0] means the account ID, args[1] means the account initial value.
@@ -194,6 +195,7 @@ func create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	return fmt.Sprintf("Create account: %s  is success!", args[0]), nil
+
 }
 
 // delete an account of ledger. args[0] represents the account ID.
@@ -266,7 +268,7 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 			"\t",
 			stub.GetTxID(),
 			"\t",
-			tm.Format("Mon Jan 2 15:04:05 +0000 GMT 2006"),
+			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
 		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
@@ -285,7 +287,7 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 			"\t",
 			stub.GetTxID(),
 			"\t",
-			tm.Format("2019-08-06 08:08:08 PM"),
+			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
 		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
@@ -324,7 +326,123 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
 		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey(), item.GetValue())
 	}
-	return fmt.Sprintf("Query success! The result is:\n %s", result), nil
+	if result == "" {
+		return "", fmt.Errorf("Do not have any records!")
+	} else {
+		return fmt.Sprintf("Query success! The result is:\n %s", result), nil
+	}
+
+}
+
+// the supervisor can rollback the transfer operation
+// args[0] represents debit account
+// args[1] represents credit account
+// args[2] represents transaction id
+func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 3 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting a debit account, credit account and a transaction id.")
+	}
+	// get satisfied out record
+	var PCKeyOut []string = make([]string, 1)
+	PCKeyOut[0] = args[0]
+	itOut, err := stub.GetStateByPartialCompositeKey("out", PCKeyOut)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key when get \"in\" record!"))
+	}
+	//get money value and delete "out" record
+	defer itOut.Close()
+	var money []byte
+	if itOut.HasNext() == false {
+		return "", fmt.Errorf(fmt.Sprintf("Database do not have such records! Please check you arguments!"))
+	}
+	for itOut.HasNext() {
+		item, err := itOut.Next()
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Get next of iteratorOut failed!"))
+		}
+		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
+		// get attribute from composite key
+		_, attrArray, err := stub.SplitCompositeKey(item.GetKey())
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Split composite key failed!"))
+		}
+		// compare the input hash code with the hash code stored in database
+		IsThisOne := strings.Compare(attrArray[4], args[2])
+		if IsThisOne == 0 {
+			money = item.GetValue()
+			stub.DelState(item.GetKey())
+			break
+		}
+	}
+	// delete "in" record
+	var PCKeyIn []string = make([]string, 1)
+	PCKeyIn[0] = args[1]
+	itIn, err := stub.GetStateByPartialCompositeKey("in", PCKeyIn)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Cannot get by partial composite key when get \"in\" record!"))
+	}
+
+	defer itIn.Close()
+	if itIn.HasNext() == false {
+		return "", fmt.Errorf(fmt.Sprintf("Database do not have such records! Please check you arguments!"))
+	}
+	for itIn.HasNext() {
+		item, err := itIn.Next()
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Get next of iteratorIn failed!"))
+		}
+		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
+		// get attribute from composite key
+		_, attrArray, err := stub.SplitCompositeKey(item.GetKey())
+		if err != nil {
+			return "", fmt.Errorf(fmt.Sprintf("Split composite key failed!"))
+		}
+		// compare the input hash code with the hash code stored in database
+		IsThisOne := strings.Compare(attrArray[4], args[2])
+		if IsThisOne == 0 {
+			stub.DelState(item.GetKey())
+			break
+		}
+	}
+
+	var queryOut []string = make([]string, 2)
+	queryOut[0] = "out"
+	queryOut[1] = args[0]
+
+	result, err := query(stub, queryOut)
+	if (result != "") || (err.Error() != "Do not have any records!") {
+		return "", fmt.Errorf("RollBack failed during examination! The out record is not deleted! With result: %s; error: %s", result, err)
+	}
+
+	var queryIn []string = make([]string, 2)
+	queryIn[0] = "in"
+	queryIn[1] = args[0]
+
+	result, err = query(stub, queryIn)
+	if result != "" || err.Error() != "Do not have any records!" {
+		return "", fmt.Errorf("RollBack failed during examination! The in record is not deleted!")
+	}
+
+	// Then we should put money back into debit account.
+	//reduce money from the debit account.
+	var argsD []string = make([]string, 2)
+	argsD[0] = args[1]
+	argsD[1] = string(money)
+	_, err = reduce(stub, argsD)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Reduce debit account failed! With error: %s", err))
+	}
+
+	//add money to the cebit account.
+	var argsC []string = make([]string, 2)
+	argsC[0] = args[0]
+	argsC[1] = string(money)
+	_, err = add(stub, argsC)
+	if err != nil {
+		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed! With error: %s", err))
+	}
+
+	return fmt.Sprintf("RollBack Success!"), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
