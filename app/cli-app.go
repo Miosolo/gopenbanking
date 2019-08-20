@@ -74,12 +74,11 @@ func main() {
   domainMap["CitiBank"] = "citi.italktoyou.cn"
   domainMap["Supervisor"] = "supervi.italktoyou.cn"
 
-
   // define the flags & parse the params
-  channelID := flag.String("chan", "orgchannel", `Name of the channel`)
+  channelID := flag.String("chan", "orgschannel", `Name of the channel`)
   orgID := flag.String("org", "", "Name of your orgnization")
   orgUser := flag.String("user", "", `Your User ID in this organization`)
-  chaincodeID := flag.String("cc", "", "ID of the chaincode instanciated")
+  chaincodeID := flag.String("cc", "cc_gopenbanking", "ID of the chaincode instanciated")
   flag.Parse()
 
   // set env for YAML parsing
@@ -88,14 +87,10 @@ func main() {
     os.Setenv("FABRIC_CRYPTOCONFIG_USER", 
       os.Getenv("FABRIC_CRYPTOCONFIG_ROOT")+"/peerOrganizations/"+
       domain+"/users/"+*orgUser+"@"+domain+"/msp/")
-    //os.Setenv("FABRIC_CRYPTOCONFIG_USER", "/home/miosolo/go/src/github.com/Miosolo/gopenbanking/app/userwise-crypto-config/ANZBank/Admin/msp/")
-    //os.Setenv("FABRIC_CRYPTOCONFIG_USER", os.Getenv("PWD")+"/userwise-crypto-config/"+*orgID+"/"+*orgUser+"/msp/")
     os.Setenv("FABRIC_ORG_ID", *orgID)
   } else {
     log.Fatalln("Invalid organization")
   }
-
-
 
   // init the env
   configProvider := config.FromFile(configPath)
@@ -123,6 +118,7 @@ Functions and parameters of the ANZ-CITI Banking Network:
   - (Any) "query" + object type + account name
   - (Any) "exit": terminate the loop and exit
 =================================`)
+
   // start loop
   for true {
     // read the stdin input
@@ -140,7 +136,7 @@ Functions and parameters of the ANZ-CITI Banking Network:
     }
 
     // else, invoke the smart contract
-    if response, err := invoke(sdk, *channelID, *orgID, *orgUser, *chaincodeID, fn, args[1:inputCnt]); err != nil {
+    if response, err := invoke(sdk, *channelID, *orgID, *orgUser, *chaincodeID, fn, args[0:inputCnt-1]); err != nil {
       log.Printf("invoke chaincode fail: %s\n", err.Error())
     } else {
       fmt.Println("Response: " + response)

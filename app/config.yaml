@@ -115,7 +115,7 @@ client:
 channels:
   # name of the channel
 #  mychannel:
-  orgchannel:
+  orgschannel:
     # Required. list of orderers designated by the application to use for transactions on this
     # channel. This list can be a result of access control ("org1" can only access "ordererA"), or
     # operational decisions to share loads from applications among the orderers.  The values must
@@ -383,7 +383,7 @@ orderers:
 #      path: ${FABRIC_SDK_GO_PROJECT_PATH}/test/fixtures/channel/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
   orderer.italktoyou.cn:
     # [Optional] Default: Infer from hostname
-    # url: orderer.example.com:7050
+    url: orderer.italktoyou.cn:7050
     tlsCACerts:
       # Certificate location absolute path
       path: ${FABRIC_CRYPTOCONFIG_ROOT}/ordererOrganizations/italktoyou.cn/tlsca/tlsca.italktoyou.cn-cert.pem
@@ -421,20 +421,20 @@ peers:
   peer0.supervi.italktoyou.cn:
     # this URL is used to send endorsement and query requests
     # [Optional] Default: Infer from hostname
-    url: peer0.supervi.italktoyou.cn:7051
+    url: grpc://peer0.supervi.italktoyou.cn:7051
     tlsCACerts:
       # Certificate location absolute path
       path: ${FABRIC_CRYPTOCONFIG_ROOT}/peerOrganizations/supervi.italktoyou.cn/peers/peer0.supervi.italktoyou.cn/tls/server.crt
 
   peer0.citi.italktoyou.cn:
     # this URL is used to send endorsement and query requests
-    url: peer0.citi.italktoyou.cn:7051
+    url: grpc://peer0.citi.italktoyou.cn:7051
     tlsCACerts:
       # Certificate location absolute path
       path: ${FABRIC_CRYPTOCONFIG_ROOT}/peerOrganizations/citi.italktoyou.cn/peers/peer0.citi.italktoyou.cn/tls/server.crt
 
   peer0.anz.italktoyou.cn:
-    url: peer0.anz.italktoyou.cn:7051
+    url: grpc://peer0.anz.italktoyou.cn:7051
     tlsCACerts:
       path: ${FABRIC_CRYPTOCONFIG_ROOT}/peerOrganizations/anz.italktoyou.cn/peers/peer0.anz.italktoyou.cn/tls/server.crt
 #
