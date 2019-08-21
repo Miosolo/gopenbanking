@@ -383,7 +383,7 @@ orderers:
 #      path: ${FABRIC_SDK_GO_PROJECT_PATH}/test/fixtures/channel/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
   orderer.italktoyou.cn:
     # [Optional] Default: Infer from hostname
-    url: orderer.italktoyou.cn:7050
+    url: grpc://orderer.italktoyou.cn:7050
     tlsCACerts:
       # Certificate location absolute path
       path: ${FABRIC_CRYPTOCONFIG_ROOT}/ordererOrganizations/italktoyou.cn/tlsca/tlsca.italktoyou.cn-cert.pem

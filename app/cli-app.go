@@ -58,7 +58,7 @@ func invoke(sdk *fabsdk.FabricSDK, channelID, orgID,
     Args:        byteArgs,
   }
 
-  response, err := channelClient.Query(request)
+  response, err := channelClient.Execute(request)
   if err != nil {
     log.Println("operation fail: ", err.Error())
     return "", err
