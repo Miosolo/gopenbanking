@@ -468,23 +468,6 @@ func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		}
 	}
 
-	var queryOut []string = make([]string, 2)
-	queryOut[0] = "out"
-	queryOut[1] = args[0]
-
-	result, err := query(stub, queryOut)
-	if (result != "") || (err.Error() != "Do not have any records!") {
-		return "", fmt.Errorf("RollBack failed during examination! The out record is not deleted! With result: %s; error: %s", result, err)
-	}
-
-	var queryIn []string = make([]string, 2)
-	queryIn[0] = "in"
-	queryIn[1] = args[0]
-
-	result, err = query(stub, queryIn)
-	if result != "" || err.Error() != "Do not have any records!" {
-		return "", fmt.Errorf("RollBack failed during examination! The in record is not deleted!")
-	}
 
 	// Then we should put money back into debit account.
 	//reduce money from the debit account.
