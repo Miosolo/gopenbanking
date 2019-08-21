@@ -20,7 +20,7 @@ production/
 *.tx
 
 #build production
-app/app
+gopenbanking
 chaincode/chaincode
 chaincode-security/chaincode-security
 

@@ -1,8 +1,4 @@
-PROJECT="cli-app"
-BINARY="cli-app"
-VERSION=1.0.0
-
-default: install
+default: test
 
 install:
 	#loading bug fixes to sdk packages
@@ -13,4 +9,10 @@ install:
 	#building app
 	go build
 
-.PHONY: default install test
+test: install
+	go test -timeout 120s .
+
+demo: install
+	go test -v -timeout 120s .
+
+.PHONY: default install test demo
