@@ -29,7 +29,8 @@ func main() {
 		fmt.Println(`==========INSTRUCTIONS==========
   - "rollback" + debit account + credit account + transaction ID
   - "query" + "in" / "out" + account
-  - "exit": terminate the loop and exit
+	- "exit": terminate the loop and exit
+<account format>: <bank-wise account>@<bank>, eg. abc123@ANZBank
 ================================`)
 	} else { // banks
 		fmt.Println(`==========INSTRUCTIONS==========
@@ -39,9 +40,10 @@ Functions and parameters of the ANZ-CITI Banking Network:
   - "reduce" + account + value
   - "create" + account + inititial value
   - "delete" + account
-  - "tranfer" + this side's account + full account (this side/ other sides) + tranfer amount
+  - "tranfer" + account + **full account** + tranfer amount
   - "query" + "in" / "out" + account
-  - "exit": terminate the loop and exit
+	- "exit": terminate the loop and exit
+<full account format>: <account>@<bank>, eg. abc123@ANZBank
 ================================`)
 	}
 
