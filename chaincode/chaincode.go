@@ -32,8 +32,8 @@ type SimpleAsset struct {
 }
 
 func init() {
-	paramLength := make(map[string]int)
-	paramLengthError := make(map[string]string)
+	paramLength = make(map[string]int)
+	paramLengthError = make(map[string]string)
 	// init the dict for parameter length check
 	paramLength["add"] = 2
 	paramLengthError["add"] = "Incorrect arguments. Expecting an account name and a balance value."
@@ -122,7 +122,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		case "query":
 			result, err = query(stub, args)
 		case "rollback":
-			result, err = query(stub, args)
+			result, err = rollback(stub, args)
 		default:
 			return shim.Error("You do not have authority to get access to this function!")
 		}
@@ -399,7 +399,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	result := ""
 	header := ""
 	if args[0] == "in" || args[0] == "out" {
-		header = fmt.Sprintf("ID | Time | Transaction | Amount\n")
+		header = "ID | Time | Transaction | Amount\n"
 	} else {
 		return "", fmt.Errorf(fmt.Sprintf("You have typed a wrong objectType!"))
 	}
@@ -530,6 +530,6 @@ func main() {
 	// Set the backends to be used.
 	logging.SetBackend(backend1Leveled, backend2Formatter)
 	if err := shim.Start(new(SimpleAsset)); err != nil {
-		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+		fmt.Printf("Error starting SimpleAsset chaincode: %s\n", err)
 	}
 }
