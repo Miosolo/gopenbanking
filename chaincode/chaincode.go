@@ -291,14 +291,14 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	argsC[1] = args[2]
 	_, err = add(stub, argsC)
 	if err != nil {
-		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed!"))
+		return "", fmt.Errorf(fmt.Sprintf("Add credit account failed!"))
 	}
 	// store the transfer record into the database
 	// "out" means the money go out from one's account,
 	// so the organization of the key-value pair is:
 	// Key is a composite key, its sequence is ["out"debit account] [credit account] [uuid] [time]
 	// value is the amount of money been transfered.
-	msg, err := CreateHistoryKey(stub, args, "out")
+	msg, err := createHistoryKey(stub, args, "out")
 	if err != nil {
 		return "", fmt.Errorf("Create history records failed! with error: %s", err)
 	}
@@ -308,7 +308,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	// so the organization of the key-value pair is:
 	// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
 	// value is the amount of money been transfered.
-	msg, err = CreateHistoryKey(stub, args, "in")
+	msg, err = createHistoryKey(stub, args, "in")
 	if err != nil {
 		return "", fmt.Errorf("Create history records failed! with error: %s", err)
 	}
@@ -321,7 +321,7 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 // "out" means the money go out from one's account,
 // "in" means the money go into one's account,
 // both "out" and "in" is tags, they emphasize on going out or in records
-func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first string) (string, error) {
+func createHistoryKey(stub shim.ChaincodeStubInterface, args []string, first string) (string, error) {
 	// get the time of the transaction been finished.
 	FormatTime, err := stub.GetTxTimestamp()
 	if err != nil {
@@ -335,14 +335,8 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 	// value is the amount of money been transfered.
 	if first == "out" {
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			stub.GetTxID(),
-			"\t",
-			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
-			"\t",
-			args[0],
-			"->",
-			args[1],
-		})
+			stub.GetTxID(), "\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"), "\t", 
+			args[0], "->", args[1]})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
 		}
@@ -357,14 +351,8 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 		// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
 		// value is the amount of money been transfered.
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			stub.GetTxID(),
-			"\t",
-			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
-			"\t",
-			args[1],
-			"->",
-			args[0],
-		})
+			stub.GetTxID(), "\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"), "\t",
+			args[1], "->", args[0]})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
 		}
@@ -397,10 +385,8 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	defer it.Close()
 	// result contains all the appropriate results
 	result := ""
-	header := ""
-	if args[0] == "in" || args[0] == "out" {
-		header = "ID | Time | Transaction | Amount\n"
-	} else {
+	header :=  "ID | Time | Transaction | Amount"
+	if args[0] != "in" && args[0] != "out" {
 		return "", fmt.Errorf(fmt.Sprintf("You have typed a wrong objectType!"))
 	}
 
@@ -416,9 +402,8 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if result == "" {
 		return "", fmt.Errorf("Do not have any records!")
 	} else {
-		return fmt.Sprintf("Query success! The result obeys <%s>:\n%s", header, result), nil
+		return fmt.Sprintf("Query success! The entries obeys <%s>:\n%s", header, result), nil
 	}
-
 }
 
 // the supervisor can rollback the transferring operation
