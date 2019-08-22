@@ -86,8 +86,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if mspid == "SuperviMSP" {
 		if fn == "query" {
 			result, err = query(stub, args)
-		} else if fn == "RollBack" {
-			result, err = RollBack(stub, args)
+		} else if fn == "rollback" {
+			result, err = rollback(stub, args)
 		} else {
 			return shim.Error("You do not have authority to get access to this function!")
 		}
@@ -106,8 +106,10 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 			result, err = transfer(stub, args)
 		} else if fn == "query" {
 			result, err = query(stub, args)
-		} else if fn == "RollBack" {
-			result, err = RollBack(stub, args)
+		} else if fn == "rollback" {
+			result, err = rollback(stub, args)
+		} else {
+			return shim.Error("You do not have authority to get access to this function!")
 		}
 	}
 
@@ -380,6 +382,13 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	defer it.Close()
 	// result contains all the appropriate results
 	result := ""
+	if args[0] == "in" {
+		result = fmt.Sprintf("objectType\tcreditAccount\tdebitAccount\ttransactionID\tTime\tmoney\n")
+	} else if args[0] == "out" {
+		result = fmt.Sprintf("objectType\tdebitAccount\tcreditAccount\ttransactionID\tTime\tmoney\n")
+	} else {
+		return "", fmt.Errorf(fmt.Sprintf("You have typed a wrong objectType!"))
+	}
 	for it.HasNext() {
 		item, err := it.Next()
 		if err != nil {
@@ -389,7 +398,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey(), item.GetValue())
 	}
 
-	if result == "" {
+	if result == fmt.Sprintf("objectType\tcreditAccount\tdebitAccount\ttransactionID\tTime\tmoney\n") || result == fmt.Sprintf("objectType\tdebitAccount\tcreditAccount\ttransactionID\tTime\tmoney\n") {
 		return "", fmt.Errorf("Do not have any records!")
 	} else {
 		return fmt.Sprintf("Query success! The result is:\n %s", result), nil
@@ -401,7 +410,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 // args[0] represents debit account in transferring record
 // args[1] represents credit account in transferring record
 // args[2] represents transaction id in transferring record
-func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func rollback(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 3 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a debit account, credit account and a transaction id.")
 	}
@@ -468,7 +477,6 @@ func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		}
 	}
 
-
 	// Then we should put money back into debit account.
 	//reduce money from the debit account.
 	var argsD []string = make([]string, 2)
@@ -488,7 +496,7 @@ func RollBack(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf(fmt.Sprintf("Add cebit account failed! With error: %s", err))
 	}
 
-	return fmt.Sprintf("RollBack Success!"), nil
+	return fmt.Sprintf("rollback Success!"), nil
 }
 
 // main function starts up the chaincode in the container during instantiate
