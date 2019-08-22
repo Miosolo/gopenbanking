@@ -329,7 +329,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if result == "" {
 		return "", fmt.Errorf("Do not have any records!")
 	} else {
-		return fmt.Sprintf("Query success! The result is:\n %s", result), nil
+		return fmt.Sprintf("Query success! The result is:\n%s", result), nil
 	}
 
 }
