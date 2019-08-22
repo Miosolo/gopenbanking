@@ -335,13 +335,13 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 	// value is the amount of money been transfered.
 	if first == "out" {
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			args[0],
-			"\t",
-			args[1],
-			"\t",
 			stub.GetTxID(),
 			"\t",
 			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
+			"\t",
+			args[0],
+			"->",
+			args[1],
 		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
@@ -357,13 +357,13 @@ func CreateHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 		// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
 		// value is the amount of money been transfered.
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			args[1],
-			"\t",
-			args[0],
-			"\t",
 			stub.GetTxID(),
 			"\t",
 			tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
+			"\t",
+			args[1],
+			"->",
+			args[0],
 		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
@@ -397,26 +397,26 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	defer it.Close()
 	// result contains all the appropriate results
 	result := ""
-	if args[0] == "in" {
-		result = fmt.Sprintf("objectType\tcreditAccount\tdebitAccount\ttransactionID\tTime\tmoney\n")
-	} else if args[0] == "out" {
-		result = fmt.Sprintf("objectType\tdebitAccount\tcreditAccount\ttransactionID\tTime\tmoney\n")
+	header := ""
+	if args[0] == "in" || args[0] == "out" {
+		header = fmt.Sprintf("ID | Time | Transaction | Amount\n")
 	} else {
 		return "", fmt.Errorf(fmt.Sprintf("You have typed a wrong objectType!"))
 	}
+
 	for it.HasNext() {
 		item, err := it.Next()
 		if err != nil {
 			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
 		}
 		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
-		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey(), item.GetValue())
+		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey()[len(args[0]):], item.GetValue())// omit "in" / "out"
 	}
 
-	if result == fmt.Sprintf("objectType\tcreditAccount\tdebitAccount\ttransactionID\tTime\tmoney\n") || result == fmt.Sprintf("objectType\tdebitAccount\tcreditAccount\ttransactionID\tTime\tmoney\n") {
+	if result == "" {
 		return "", fmt.Errorf("Do not have any records!")
 	} else {
-		return fmt.Sprintf("Query success! The result is:\n %s", result), nil
+		return fmt.Sprintf("Query success! The result obeys <%s>:\n%s", header, result), nil
 	}
 
 }
