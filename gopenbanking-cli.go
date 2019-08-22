@@ -57,7 +57,7 @@ Functions and parameters of the ANZ-CITI Banking Network:
 		if response, err := ap.Invoke(fn, args[0:inputCnt-1]); err != nil {
 			fmt.Println("Invoking chaincode failed: " + err.Error())
 		} else {
-			fmt.Println("Response: %s" + response)
+			fmt.Println("Response: " + response)
 		}
 	}
 }

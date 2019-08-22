@@ -123,8 +123,8 @@ channels:
     # deprecated: not recommended, to override any orderer configuration items, entity matchers should be used.
 #    orderers:
 #      - orderer.example.com
-    orderers:
-      - orderer.italktoyou.cn
+#    orderers:
+#      - orderer.italktoyou.cn
 
     # Required. list of peers from participating orgs
 #    peers:
@@ -506,7 +506,9 @@ entityMatchers:
 #
 #    - pattern: (\w+).example5.(\w+):(\d+)
 #      ignoreEndpoint: true
-
+  orderer:
+    - pattern: orderer.(\w+)
+      mappedHost: orderer.italktoyou.cn
 #  orderer:
 #    - pattern: (\w+).example2.(\w+)
 #      urlSubstitutionExp: localhost:7050

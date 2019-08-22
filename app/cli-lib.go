@@ -82,7 +82,7 @@ func (ap Provider) identify() (err error) {
 		return err
 	}
 
-	log.Println("Identity is found: " + identity.Identifier().MSPID)
+	log.Println("using identity: " + identity.Identifier().MSPID)
 	return nil
 }
 
