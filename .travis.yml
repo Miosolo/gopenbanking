@@ -1,2 +1,6 @@
 language: go
-script: true
+
+go:
+- "1.12"
+
+# uses makefile in root directory by default

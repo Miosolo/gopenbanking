@@ -10,3 +10,23 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+fabric-ca/fabric-ca-server.db
+cc_gopenbanking
+
+# blockchain production
+production/
+*.block
+*.tx
+
+#build production
+gopenbanking
+chaincode/chaincode
+chaincode-security/chaincode-security
+
+# logs
+*.log
+
+
+# backup files
+*.bak

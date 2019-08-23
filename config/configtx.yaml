@@ -1,0 +1,186 @@
+# Configtx.yaml is used to generate genesis block: orderer.genesis.block
+# It contains all the organizations' info, including Name, ID, MSPDir and Anchor Peer's info
+# And it also contains orderer's info including orderertype(solo), address, batchtimeout, batchsize and kafka info(if use solo, kafka info is invalid)
+
+# Organizations tag includes all four organizations' info. There are ANZ, Citi Bank, Orderer and Supervisor
+# All the Anchor peers use peer0 and port 7051
+Organizations:
+    - &OrdererOrg
+        Name: Orderer
+        ID: OrdererMSP
+        MSPDir: /opt/hyperledger/gopenbanking/crypto-config/ordererOrganizations/italktoyou.cn/msp
+        Policies: &OrdererPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &ANZBank
+        Name: ANZBank
+        ID: ANZBankMSP
+        MSPDir: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/anz.italktoyou.cn/msp
+        Policies: &ANZBankPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('ANZBankMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ANZBankMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ANZBankMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.anz.italktoyou.cn
+              Port: 7051
+
+    - &CitiBank
+        Name: CitiBank
+        ID: CitiBankMSP
+        MSPDir: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/citi.italktoyou.cn/msp
+        Policies: &CitiBankPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('CitiBankMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('CitiBankMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('CitiBankMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.citi.italktoyou.cn
+              Port: 7051
+
+    - &Supervisor
+        Name: Supervisor
+        ID: SuperviMSP
+        MSPDir: /opt/hyperledger/gopenbanking/crypto-config/peerOrganizations/supervi.italktoyou.cn/msp
+        Policies: &SupervisorPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('SuperviMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('SuperviMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('SuperviMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.supervi.italktoyou.cn
+              Port: 7051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V1_4_2: true
+    Orderer: &OrdererCapabilities
+        V1_1: true
+    Application: &ApplicationCapabilities
+        V1_4_2: true
+        V1_3: false
+        V1_2: false
+        V1_1: false
+
+# Orderer tag includes specific information about orderer default settings
+Orderer: &OrdererDefaults
+    
+    OrdererType: kafka
+    Addresses: 
+        - orderer.italktoyou.cn:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 98 MB
+        PreferredMaxBytes: 512 KB
+    MaxChannels: 0
+    Kafka:
+        Brokers:
+            - orderer.italktoyou.cn:9092
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    Capabilities:
+        <<: *OrdererCapabilities
+
+Application: &ApplicationDefaults
+    Organizations:
+    ACLs: &ACLsDefault
+        lscc/ChaincodeExists: /Channel/Application/Readers
+        lscc/GetDeploymentSpec: /Channel/Application/Readers
+        lscc/GetChaincodeData: /Channel/Application/Readers
+        lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+        qscc/GetChainInfo: /Channel/Application/Readers
+        qscc/GetBlockByTxID: /Channel/Application/Readers
+        qscc/GetBlockByHash: /Channel/Application/Readers
+        qscc/GetBlockByNumber: /Channel/Application/Readers
+        cscc/GetConfigBlock: /Channel/Application/Readers
+        cscc/GetConfigTree: /Channel/Application/Readers
+        cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+        peer/Propose: /Channel/Application/Writers
+        peer/ChaincodeToChaincode: /Channel/Application/Readers
+        event/Block: /Channel/Application/Readers
+        event/FilteredBlock: /Channel/Application/Readers
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    OrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            BankConsortium:
+                Organizations:
+                    - *ANZBank
+                    - *CitiBank
+                    - *Supervisor
+    OrgsChannel:
+        <<: *ChannelDefaults
+        Consortium: BankConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ANZBank
+                - *CitiBank
+                - *Supervisor
