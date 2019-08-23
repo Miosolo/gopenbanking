@@ -400,7 +400,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
 		}
 		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
-		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey()[len(args[0]):], item.GetValue()) // omit "in" / "out"
+		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey()[(len(args[0])+1):], item.GetValue()) // omit "in" / "out"
 	}
 
 	if result == "" {
