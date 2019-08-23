@@ -335,8 +335,10 @@ func createHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 	// value is the amount of money been transfered.
 	if first == "out" {
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			stub.GetTxID(), "\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"), "\t", 
-			args[0], "->", args[1]})
+			args[0], "->", args[1],
+			"\t", stub.GetTxID(),
+			"\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
+		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
 		}
@@ -351,8 +353,10 @@ func createHistoryKey(stub shim.ChaincodeStubInterface, args []string, first str
 		// Key is a composite key, its sequence is ["in"credit account] [debit account] [uuid] [time]
 		// value is the amount of money been transfered.
 		historyKey, err := stub.CreateCompositeKey(first, []string{
-			stub.GetTxID(), "\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"), "\t",
-			args[1], "->", args[0]})
+			args[1], "<-", args[0],
+			"\t", stub.GetTxID(),
+			"\t", tm.Format("Mon Jan 2 15:04:05 +0800 UTC 2006"),
+		})
 		if err != nil {
 			return "", fmt.Errorf("Create historyKey failed! With error: %s", err)
 		}
@@ -385,7 +389,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	defer it.Close()
 	// result contains all the appropriate results
 	result := ""
-	header :=  "ID | Time | Transaction | Amount"
+	header := "AccountAccociation | ID | Time | Amount"
 	if args[0] != "in" && args[0] != "out" {
 		return "", fmt.Errorf(fmt.Sprintf("You have typed a wrong objectType!"))
 	}
@@ -396,7 +400,7 @@ func query(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 			return "", fmt.Errorf(fmt.Sprintf("Get next of iterator failed!"))
 		}
 		log.Info(fmt.Sprintf("%s %s", item.GetKey(), item.GetValue()))
-		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey()[len(args[0]):], item.GetValue())// omit "in" / "out"
+		result = result + fmt.Sprintf("%s\t%s\n", item.GetKey()[len(args[0]):], item.GetValue()) // omit "in" / "out"
 	}
 
 	if result == "" {
