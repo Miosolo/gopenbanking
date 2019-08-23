@@ -113,16 +113,16 @@ func TestProvider_Invoke_Once(t *testing.T) {
 		wantResp string
 		wantErr  bool
 	}{{name: "test get",
-		args:    args{ccFunction: "get", args: []string{"a"}},
+		args:    args{ccFunction: "get", args: []string{"alice"}},
 		wantErr: false}, {
 		name:    "test query",
-		args:    args{ccFunction: "query", args: []string{"in", "a"}},
+		args:    args{ccFunction: "query", args: []string{"in", "alice"}},
 		wantErr: false}, {
 		name:    "test add",
-		args:    args{ccFunction: "add", args: []string{"a", "1"}},
+		args:    args{ccFunction: "add", args: []string{"alice", "1"}},
 		wantErr: false}, {
 		name:    "test reduce",
-		args:    args{ccFunction: "reduce", args: []string{"a", "1"}},
+		args:    args{ccFunction: "reduce", args: []string{"alice", "1"}},
 		wantErr: false}, {
 		name:    "test create",
 		args:    args{ccFunction: "create", args: []string{"test", "0"}},
@@ -131,7 +131,7 @@ func TestProvider_Invoke_Once(t *testing.T) {
 		args:    args{ccFunction: "delete", args: []string{"test"}},
 		wantErr: false}, {
 		name:    "test tranfer",
-		args:    args{ccFunction: "transfer", args: []string{"a", "b", "1"}},
+		args:    args{ccFunction: "transfer", args: []string{"alice", "bob@CitiBank", "1"}},
 		wantErr: false}}
 
 	for _, tt := range tests {
@@ -186,10 +186,10 @@ func TestProvider_Invoke_Validate_One_Account(t *testing.T) {
 		wantResp string
 		wantErr  bool
 	}{{name: "velidate add",
-		args:    args{ccFunction: "add", args: []string{"a", "1"}},
+		args:    args{ccFunction: "add", args: []string{"alice", "1"}},
 		wantErr: false}, {
 		name:    "velidate reduce",
-		args:    args{ccFunction: "reduce", args: []string{"a", "1"}},
+		args:    args{ccFunction: "reduce", args: []string{"alice", "1"}},
 		wantErr: false}}
 
 	re := regexp.MustCompile(`(\d+)$`) // the num pattern in response
@@ -284,7 +284,7 @@ func TestProvider_Invoke_Validate_Transfer(t *testing.T) {
 		wantResp string
 		wantErr  bool
 	}{{name: "velidate tranfer",
-		args:    args{ccFunction: "transfer", args: []string{"a", "b", "1"}},
+		args:    args{ccFunction: "transfer", args: []string{"alice", "carol@ANZBank", "1"}},
 		wantErr: false}}
 
 	re := regexp.MustCompile(`(\d+)$`) // the num pattern in response
@@ -316,7 +316,7 @@ func TestProvider_Invoke_Validate_Transfer(t *testing.T) {
 				return
 			}
 			// Credit
-			resp, err = ap.Invoke("get", []string{tt.args.args[1]})
+			resp, err = ap.Invoke("get", []string{"carol"})
 			if err != nil {
 				t.Errorf("Get original account balance error: %v", err)
 				return
@@ -351,7 +351,7 @@ func TestProvider_Invoke_Validate_Transfer(t *testing.T) {
 				t.Errorf("Cannot parse numbers from the response: %s, error = %v", resp, err)
 				return
 			}
-			resp, err = ap.Invoke("get", []string{tt.args.args[1]})
+			resp, err = ap.Invoke("get", []string{"carol"})
 			if err != nil {
 				t.Errorf("Get current account balance error: %v", err)
 				return
